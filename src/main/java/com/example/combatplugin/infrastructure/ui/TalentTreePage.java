@@ -38,7 +38,8 @@ import java.util.UUID;
 public class TalentTreePage extends InteractiveCustomUIPage<TalentTreePage.TalentPageEvent> {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    private static final String UI_KEY = "TalentTreePage.ui";
+    // ASSUMPTION: Hytale resolves .ui files relative to Common/UI/
+    private static final String UI_KEY = "Custom/TalentTreePage.ui";
 
     private final List<TalentDefinition> talents;
     private PlayerProfile profile;

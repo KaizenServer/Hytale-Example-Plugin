@@ -96,10 +96,9 @@ public class SlotSwitchSystem {
 
     private UUID resolveUuid(Store<EntityStore> store, Ref<EntityStore> ref) {
         try {
-            Object uuidComp = store.getComponent(ref,
-                    (ComponentType) com.hypixel.hytale.server.core.entity.UUIDComponent.getComponentType());
-            if (uuidComp == null) return null;
-            return (UUID) uuidComp.getClass().getMethod("getUuid").invoke(uuidComp);
+            com.hypixel.hytale.server.core.entity.UUIDComponent uuidComp =
+                    store.getComponent(ref, com.hypixel.hytale.server.core.entity.UUIDComponent.getComponentType());
+            return uuidComp != null ? uuidComp.getUuid() : null;
         } catch (Exception e) {
             return null;
         }

@@ -30,6 +30,9 @@ public interface TalentEffect {
         return new CombinedEffect(modifiers, effects);
     }
 
-    record CombinedEffect(List<CombatModifier> getModifiers, List<TriggeredEffect> getTriggeredEffects)
-            implements TalentEffect {}
+    record CombinedEffect(List<CombatModifier> modifiers, List<TriggeredEffect> triggeredEffects)
+            implements TalentEffect {
+        @Override public List<CombatModifier> getModifiers()        { return modifiers; }
+        @Override public List<TriggeredEffect> getTriggeredEffects() { return triggeredEffects; }
+    }
 }

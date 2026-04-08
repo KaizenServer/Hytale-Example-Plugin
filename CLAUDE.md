@@ -11,6 +11,7 @@ Read in this order. Do not skip any.
 1. `problem_solving/CLAUDE_BIBLE.md` - rules derived from real mistakes. Apply them actively.
 2. `problem_solving/SESSION_PRIMER.md` - how we handle problems and verification.
 3. List the contents of `claude_methodologies/` - know what methodologies exist.
+4. Check `Ejemplos/` - to know if they exist other real examples to understand how the sistem works, also check if there is an API.md.
 
 **Do not respond to the user's request until you have read all three.**
 

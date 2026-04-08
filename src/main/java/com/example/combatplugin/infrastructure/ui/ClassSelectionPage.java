@@ -33,12 +33,13 @@ import java.util.UUID;
  * from the plugin's Common/Pages/ resources directory. Adjust the key if the actual
  * client path resolution differs.
  */
-public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPage.EventData_> {
+public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPage.ClassEventData> {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     // ASSUMPTION: Plugin .ui files are served by the client at "Pages/<filename>"
     // matching the same convention as game-internal pages (Pages/RespawnPage.ui, etc.)
-    private static final String UI_KEY = "ClassSelectionPage.ui";
+    // ASSUMPTION: Hytale resolves .ui files relative to Common/UI/
+    private static final String UI_KEY = "Custom/ClassSelectionPage.ui";
 
     private final List<ClassDefinition> classes;
     private PlayerProfile profile;
@@ -48,7 +49,7 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
     public ClassSelectionPage(PlayerRef playerRef, UUID playerUuid,
                               List<ClassDefinition> classes, PlayerProfile profile,
                               ChooseClassUseCase chooseUseCase) {
-        super(playerRef, CustomPageLifetime.CanDismiss, EventData_.codec());
+        super(playerRef, CustomPageLifetime.CanDismiss, ClassEventData.codec());
         this.playerUuid = playerUuid;
         this.classes = classes;
         this.profile = profile;
@@ -106,7 +107,7 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
     @Override
     public void handleDataEvent(@Nonnull Ref<EntityStore> ref,
                                 @Nonnull Store<EntityStore> store,
-                                @Nonnull EventData_ data) {
+                                @Nonnull ClassEventData data) {
         if (!"choose".equals(data.action)) return;
         if (data.classId == null || data.classId.isBlank()) return;
 
@@ -126,13 +127,13 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
     // ── Event data codec ──────────────────────────────────────────────────────
 
     /** BSON event data payload sent by the client on button click. */
-    public static final class EventData_ {
+    public static final class ClassEventData {
         public String action;  // "choose"
         public String classId; // e.g. "sword_master"
 
         /** Returns a fresh BuilderCodec each call — avoids ExceptionInInitializerError. */
-        public static BuilderCodec<EventData_> codec() {
-            return BuilderCodec.builder(EventData_.class, EventData_::new)
+        public static BuilderCodec<ClassEventData> codec() {
+            return BuilderCodec.builder(ClassEventData.class, ClassEventData::new)
                     .append(new KeyedCodec<>("action",  Codec.STRING),
                             (d, v) -> d.action  = v, d -> d.action).add()
                     .append(new KeyedCodec<>("classId", Codec.STRING),
@@ -140,6 +141,6 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
                     .build();
         }
 
-        public EventData_() {}
+        public ClassEventData() {}
     }
 }

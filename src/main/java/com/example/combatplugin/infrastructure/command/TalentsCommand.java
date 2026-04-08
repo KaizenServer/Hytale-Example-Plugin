@@ -1,6 +1,5 @@
 package com.example.combatplugin.infrastructure.command;
 
-import com.example.combatplugin.application.port.IStatApplicator;
 import com.example.combatplugin.application.port.IUiPresenter;
 import com.example.combatplugin.application.service.ProfileService;
 import com.example.combatplugin.application.service.TalentService;
@@ -42,16 +41,16 @@ public class TalentsCommand extends AbstractPlayerCommand {
     private final FlagArg resetFlag;
 
     public TalentsCommand(UnlockTalentUseCase unlockUseCase,
+                          ResetTalentsUseCase resetTalentsUseCase,
                           TalentService talentService,
                           ProfileService profileService,
-                          IStatApplicator statApplicator,
                           IUiPresenter uiPresenter) {
         super("talents", "Open your talent tree UI. Optional: --unlock <id> or --reset");
         this.talentService = talentService;
         this.profileService = profileService;
         this.unlockUseCase = unlockUseCase;
+        this.resetUseCase = resetTalentsUseCase;
         this.uiPresenter = uiPresenter;
-        this.resetUseCase = new ResetTalentsUseCase(profileService, talentService, statApplicator);
 
         this.unlockArg = withOptionalArg("unlock", "Talent ID to unlock directly", ArgTypes.STRING);
         this.resetFlag = withFlagArg("reset", "Reset all talent points");

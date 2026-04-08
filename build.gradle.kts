@@ -23,13 +23,17 @@ val hytaleAssetsZip = "$hytaleBase/Assets.zip"
 
 repositories {
     mavenCentral()
+    maven {
+        name = "hytale"
+        url = uri("https://maven.hytale.com/release")
+    }
 }
 
 dependencies {
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.jspecify)
-    // Hytale server API — resolved from local installation, no Maven repository needed.
-    compileOnly(files(hytaleServerJar))
+    // Hytale server API — resolved from official Maven repository.
+    compileOnly("com.hypixel.hytale:Server:+")
 }
 
 java {

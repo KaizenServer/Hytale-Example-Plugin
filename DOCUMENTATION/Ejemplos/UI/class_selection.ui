@@ -1,0 +1,159 @@
+$C = "../Common.ui";
+
+$C.@DecoratedContainer {
+  Anchor: (Width: 850, Height: 600);
+
+  #Title {
+    Group {
+      $C.@Title {
+        @Text = "Select Your Class";
+      }
+    }
+  }
+
+  #Content {
+    Group {
+      LayoutMode: Top;
+      FlexWeight: 1;
+      Padding: (Full: 15);
+
+      Group {
+        LayoutMode: Left;
+        FlexWeight: 1;
+
+        Group #ClassListContainer {
+          Anchor: (Width: 300);
+          LayoutMode: Top;
+          Padding: (Right: 15);
+
+          Label {
+            Style: (RenderBold: true);
+            Text: "Available Classes";
+            Padding: (Bottom: 8);
+          }
+
+          Group #ClassListPanel {
+            FlexWeight: 1;
+            LayoutMode: TopScrolling;
+            ScrollbarStyle: $C.@DefaultScrollbarStyle;
+          }
+        }
+
+        Group #DescriptionContainer {
+          FlexWeight: 1;
+          LayoutMode: Top;
+          Padding: (Left: 15);
+
+          Label {
+            Style: (RenderBold: true);
+            Text: "Class Details";
+            Padding: (Bottom: 8);
+          }
+
+          Group #DescriptionPanel {
+            FlexWeight: 1;
+            LayoutMode: Top;
+            Padding: (Full: 15);
+            Background: #2a2a2a;
+
+            Label #SelectedClassName {
+              Style: (RenderBold: true, FontSize: 18);
+              Text: "";
+              Padding: (Bottom: 8);
+            }
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: TopScrolling;
+              ScrollbarStyle: $C.@DefaultScrollbarStyle;
+
+              Label #SelectedClassTagline {
+                Style: (FontSize: 12, TextColor: #aaaaaa);
+                Text: "";
+                Padding: (Bottom: 10);
+              }
+
+              Label #StrengthsHeader {
+                Style: (RenderBold: true, TextColor: #55ff55);
+                Text: "Strengths:";
+                Padding: (Top: 8, Bottom: 4);
+              }
+
+              Label #PositiveLine1 {
+                Style: (FontSize: 12, TextColor: #88ff88);
+                Text: "";
+              }
+
+              Label #PositiveLine2 {
+                Style: (FontSize: 12, TextColor: #88ff88);
+                Text: "";
+              }
+
+              Label #PositiveLine3 {
+                Style: (FontSize: 12, TextColor: #88ff88);
+                Text: "";
+              }
+
+              Label #WeaknessesHeader {
+                Style: (RenderBold: true, TextColor: #ff5555);
+                Text: "Weaknesses:";
+                Padding: (Top: 8, Bottom: 4);
+              }
+
+              Label #NegativeLine1 {
+                Style: (FontSize: 12, TextColor: #ff8888);
+                Text: "";
+              }
+
+              Label #NegativeLine2 {
+                Style: (FontSize: 12, TextColor: #ff8888);
+                Text: "";
+              }
+            }
+          }
+        }
+      }
+
+      Group {
+        LayoutMode: Left;
+        Padding: (Top: 12);
+
+        $C.@CancelTextButton #BackToRace {
+          Text: "< Back";
+        }
+
+        Group {
+          Anchor: (Width: 8);
+        }
+
+        Label #PageInfo {
+          Style: (FontSize: 12);
+          Text: "Page 1 / 1";
+          Anchor: (Width: 80);
+        }
+
+        $C.@SecondaryTextButton #PrevPageButton {
+          Text: "< Previous";
+        }
+
+        Group {
+          Anchor: (Width: 8);
+        }
+
+        $C.@SecondaryTextButton #NextPageButton {
+          Text: "Next >";
+        }
+
+        Group {
+          FlexWeight: 1;
+        }
+
+        $C.@TextButton #ConfirmSelection {
+          Text: "Confirm Selection";
+        }
+      }
+    }
+  }
+}
+
+$C.@BackButton {}

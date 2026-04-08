@@ -178,17 +178,11 @@ public class DamageModifierSystem extends EntityEventSystem<EntityStore, Damage>
         }
     }
 
-    /**
-     * INTEGRATION POINT: UUIDComponent import path unconfirmed.
-     * TODO: Replace reflection with direct import after ./gradlew build.
-     */
     private UUID resolveUuid(Store<EntityStore> store, Ref<EntityStore> ref) {
         try {
-            // ASSUMPTION: UUIDComponent is accessible and has getUuid()
-            Object uuidComp = store.getComponent(ref,
-                    (ComponentType) com.hypixel.hytale.server.core.entity.UUIDComponent.getComponentType());
-            if (uuidComp == null) return null;
-            return (UUID) uuidComp.getClass().getMethod("getUuid").invoke(uuidComp);
+            com.hypixel.hytale.server.core.entity.UUIDComponent uuidComp =
+                    store.getComponent(ref, com.hypixel.hytale.server.core.entity.UUIDComponent.getComponentType());
+            return uuidComp != null ? uuidComp.getUuid() : null;
         } catch (Exception e) {
             return null;
         }

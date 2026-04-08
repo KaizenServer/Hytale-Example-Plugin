@@ -22,12 +22,11 @@ public class SetLevelUseCase {
         PlayerProfile profile = profileService.getOrDefault(uuid);
 
         long newXp = progressionService.xpRequiredForLevel(clamped);
-        int earnedPoints = progressionService.totalEarnedTalentPoints(clamped);
-        int spentPoints = profile.getTalentPoints() >= 0
-                ? (earnedPoints - profile.getTalentPoints())
-                : 0;
-        // Keep spent points spent; adjust available pool based on new level
-        int newAvailable = Math.max(0, earnedPoints - spentPoints);
+        int newEarned = progressionService.totalEarnedTalentPoints(clamped);
+        // Spent = what they earned at current level minus what they still have available
+        int oldEarned = progressionService.totalEarnedTalentPoints(profile.getLevel());
+        int spent = Math.max(0, oldEarned - profile.getTalentPoints());
+        int newAvailable = Math.max(0, newEarned - spent);
 
         PlayerProfile updated = profile.withLevel(clamped).withXp(newXp).withTalentPoints(newAvailable);
         profileService.save(uuid, updated);
