@@ -1,0 +1,194 @@
+// CombatPlugin — Class Selection Page
+// 4 class cards, 200x280px each, 20px gap -> total inner width = 860
+// All values are hardcoded literals (no arithmetic) for parser safety.
+
+Group {
+  Background: #000000(0.65);
+  LayoutMode: Middle;
+
+  Group {
+    Anchor: (Width: 920, Height: 440);
+    LayoutMode: Top;
+    Background: #0d0d1a(0.95);
+    Padding: (Full: 20);
+
+    Label #PageTitle {
+      Style: (RenderBold: true, FontSize: 18);
+      Anchor: (Height: 36);
+      Text: "Choose Your Class";
+    }
+
+    Group #CardContainer {
+      Anchor: (Height: 300);
+      LayoutMode: Left;
+
+      Group #Card0 {
+        Anchor: (Width: 200, Height: 300);
+        LayoutMode: Top;
+        Background: #1a1a2e(0.92);
+        Padding: (Full: 12);
+
+        Label #CardTitle {
+          Style: (RenderBold: true, FontSize: 14);
+          Anchor: (Height: 22);
+          Text: "";
+        }
+
+        Label #CardRole {
+          Style: (TextColor: #aaaacc(0.9), FontSize: 11);
+          Anchor: (Height: 18);
+          Text: "";
+        }
+
+        Label #CardDesc {
+          Style: (TextColor: #cccccc(0.8), FontSize: 11);
+          Anchor: (Height: 80);
+          Text: "";
+        }
+
+        Button #CardBtn {
+          Anchor: (Width: 176, Height: 30);
+          Style: (
+            Default: (Background: #3a3a6e(0.95)),
+            Hovered: (Background: #5a5aae(0.95)),
+            Pressed: (Background: #4a4a8e(0.95))
+          );
+
+          Label #CardBtnLabel {
+            Style: (FontSize: 12);
+            Text: "Choose";
+          }
+        }
+      }
+
+      Group { Anchor: (Width: 20); }
+
+      Group #Card1 {
+        Anchor: (Width: 200, Height: 300);
+        LayoutMode: Top;
+        Background: #1a1a2e(0.92);
+        Padding: (Full: 12);
+
+        Label #CardTitle {
+          Style: (RenderBold: true, FontSize: 14);
+          Anchor: (Height: 22);
+          Text: "";
+        }
+
+        Label #CardRole {
+          Style: (TextColor: #aaaacc(0.9), FontSize: 11);
+          Anchor: (Height: 18);
+          Text: "";
+        }
+
+        Label #CardDesc {
+          Style: (TextColor: #cccccc(0.8), FontSize: 11);
+          Anchor: (Height: 80);
+          Text: "";
+        }
+
+        Button #CardBtn {
+          Anchor: (Width: 176, Height: 30);
+          Style: (
+            Default: (Background: #3a3a6e(0.95)),
+            Hovered: (Background: #5a5aae(0.95)),
+            Pressed: (Background: #4a4a8e(0.95))
+          );
+
+          Label #CardBtnLabel {
+            Style: (FontSize: 12);
+            Text: "Choose";
+          }
+        }
+      }
+
+      Group { Anchor: (Width: 20); }
+
+      Group #Card2 {
+        Anchor: (Width: 200, Height: 300);
+        LayoutMode: Top;
+        Background: #1a1a2e(0.92);
+        Padding: (Full: 12);
+
+        Label #CardTitle {
+          Style: (RenderBold: true, FontSize: 14);
+          Anchor: (Height: 22);
+          Text: "";
+        }
+
+        Label #CardRole {
+          Style: (TextColor: #aaaacc(0.9), FontSize: 11);
+          Anchor: (Height: 18);
+          Text: "";
+        }
+
+        Label #CardDesc {
+          Style: (TextColor: #cccccc(0.8), FontSize: 11);
+          Anchor: (Height: 80);
+          Text: "";
+        }
+
+        Button #CardBtn {
+          Anchor: (Width: 176, Height: 30);
+          Style: (
+            Default: (Background: #3a3a6e(0.95)),
+            Hovered: (Background: #5a5aae(0.95)),
+            Pressed: (Background: #4a4a8e(0.95))
+          );
+
+          Label #CardBtnLabel {
+            Style: (FontSize: 12);
+            Text: "Choose";
+          }
+        }
+      }
+
+      Group { Anchor: (Width: 20); }
+
+      Group #Card3 {
+        Anchor: (Width: 200, Height: 300);
+        LayoutMode: Top;
+        Background: #1a1a2e(0.92);
+        Padding: (Full: 12);
+
+        Label #CardTitle {
+          Style: (RenderBold: true, FontSize: 14);
+          Anchor: (Height: 22);
+          Text: "";
+        }
+
+        Label #CardRole {
+          Style: (TextColor: #aaaacc(0.9), FontSize: 11);
+          Anchor: (Height: 18);
+          Text: "";
+        }
+
+        Label #CardDesc {
+          Style: (TextColor: #cccccc(0.8), FontSize: 11);
+          Anchor: (Height: 80);
+          Text: "";
+        }
+
+        Button #CardBtn {
+          Anchor: (Width: 176, Height: 30);
+          Style: (
+            Default: (Background: #3a3a6e(0.95)),
+            Hovered: (Background: #5a5aae(0.95)),
+            Pressed: (Background: #4a4a8e(0.95))
+          );
+
+          Label #CardBtnLabel {
+            Style: (FontSize: 12);
+            Text: "Choose";
+          }
+        }
+      }
+    }
+
+    Label #StatusLine {
+      Style: (TextColor: #ffdd88(1.0), FontSize: 12);
+      Anchor: (Height: 24);
+      Text: "";
+    }
+  }
+}

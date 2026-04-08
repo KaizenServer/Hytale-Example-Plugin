@@ -1,0 +1,10 @@
+{
+  "_comment": "CombatPlugin default configuration. Values are loaded by CombatConfig.DEFAULT for now.",
+  "_integration": "Wire to Hytale config API (getConfig().load()) once the API is confirmed.",
+
+  "maxLevel": 50,
+  "xpCurveBase": 100.0,
+  "xpCurveExponent": 1.5,
+  "talentPointsPerLevel": 1,
+  "debugLogging": false
+}

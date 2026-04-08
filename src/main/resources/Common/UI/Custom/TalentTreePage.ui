@@ -1,0 +1,352 @@
+// CombatPlugin — Talent Tree Page
+// 16 nodes in a 4-col grid. NodeW=160 NodeH=80 NodeGap=12
+// Panel: 4*(160+12)+40 = 728 wide, 4*(80+12)+120 = 488 tall
+// All values are hardcoded literals (no arithmetic) for parser safety.
+
+Group {
+  Background: #000000(0.60);
+  LayoutMode: Middle;
+
+  Group {
+    Anchor: (Width: 728, Height: 488);
+    LayoutMode: Top;
+    Background: #0d0d1a(0.95);
+    Padding: (Full: 16);
+
+    // Header row
+    Group {
+      Anchor: (Height: 32);
+      LayoutMode: Left;
+
+      Label #PageClass {
+        Style: (RenderBold: true, FontSize: 16);
+        Anchor: (Width: 400, Height: 32);
+        Text: "Talent Tree";
+      }
+
+      Label #PagePoints {
+        Style: (TextColor: #88ff88(1.0), FontSize: 12);
+        Anchor: (Height: 32);
+        Text: "Points: 0";
+      }
+    }
+
+    // Row 0 — T0 root (1 node)
+    Group {
+      Anchor: (Height: 92);
+      LayoutMode: Left;
+
+      Group #Node0 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName {
+          Style: (RenderBold: true, FontSize: 11);
+          Anchor: (Height: 18);
+          Text: "";
+        }
+        Label #NodeRank {
+          Style: (TextColor: #88ddff(1.0), FontSize: 10);
+          Anchor: (Height: 14);
+          Text: "0/1";
+        }
+        Label #NodeLvlReq {
+          Style: (TextColor: #ffaa44(0.9), FontSize: 9);
+          Anchor: (Height: 12);
+          Text: "";
+        }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (
+            Default: (Background: #00000000),
+            Hovered: (Background: #ffffff(0.08)),
+            Pressed: (Background: #ffffff(0.12))
+          );
+        }
+      }
+    }
+
+    // Row 1 — T1 (3 nodes)
+    Group {
+      Anchor: (Height: 92);
+      LayoutMode: Left;
+
+      Group #Node1 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node2 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node3 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+    }
+
+    // Row 2 — T2 (3 nodes)
+    Group {
+      Anchor: (Height: 92);
+      LayoutMode: Left;
+
+      Group #Node4 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node5 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node6 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+    }
+
+    // Row 3 — T3 (3 nodes)
+    Group {
+      Anchor: (Height: 92);
+      LayoutMode: Left;
+
+      Group #Node7 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node8 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node9 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+    }
+
+    // Row 4a — T4 first row (3 nodes)
+    Group {
+      Anchor: (Height: 92);
+      LayoutMode: Left;
+
+      Group #Node10 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node11 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node12 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+    }
+
+    // Row 4b — T4 second row (3 nodes)
+    Group {
+      Anchor: (Height: 92);
+      LayoutMode: Left;
+
+      Group #Node13 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node14 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+
+      Group { Anchor: (Width: 12); }
+
+      Group #Node15 {
+        Anchor: (Width: 160, Height: 80);
+        LayoutMode: Top;
+        Background: #1e1e3a(0.92);
+        Padding: (Full: 8);
+
+        Label #NodeName { Style: (RenderBold: true, FontSize: 11); Anchor: (Height: 18); Text: ""; }
+        Label #NodeRank { Style: (TextColor: #88ddff(1.0), FontSize: 10); Anchor: (Height: 14); Text: "0/1"; }
+        Label #NodeLvlReq { Style: (TextColor: #ffaa44(0.9), FontSize: 9); Anchor: (Height: 12); Text: ""; }
+        Button #NodeBtn {
+          Anchor: (Width: 144, Height: 26);
+          Style: (Default: (Background: #00000000), Hovered: (Background: #ffffff(0.08)), Pressed: (Background: #ffffff(0.12)));
+        }
+      }
+    }
+
+    Label #StatusLine {
+      Style: (TextColor: #ffdd88(1.0), FontSize: 11);
+      Anchor: (Height: 20);
+      Text: "Left-click: assign rank  |  Right-click: remove rank";
+    }
+  }
+}

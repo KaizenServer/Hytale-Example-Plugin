@@ -1,1 +1,29 @@
 items.Example_Block.name=Example Block
+
+# ── CombatPlugin ──────────────────────────────────────────────────────────────
+
+# Class selection
+combat.class.chosen=You are now a {0}!
+combat.class.already_chosen=You already have a class. Use /class reset first.
+combat.class.unknown=Unknown class: {0}. Valid classes: SWORD_MASTER, ELEMENTALIST, TECHNOCRAT, NECROMANCER
+combat.class.reset=Your class has been reset. All talents refunded.
+combat.class.none=You have not chosen a class yet.
+
+# Talent system
+combat.talent.unlocked=Talent {0} unlocked!
+combat.talent.already_unlocked=You have already unlocked {0}.
+combat.talent.unknown=Unknown talent: {0}
+combat.talent.no_class=Choose a class before unlocking talents.
+combat.talent.no_points=Not enough talent points. Need {0}, have {1}.
+combat.talent.prereq_missing=Missing prerequisite talents: {0}
+combat.talent.reset=All talents reset. Points refunded.
+
+# Progression
+combat.xp.awarded=+{0} XP awarded.
+combat.level.up=Level up! {0} → {1} (+{2} talent point(s))
+combat.level.set=Level set to {0}.
+combat.level.current=Level: {0} | XP: {1} | Talent Points: {2}
+
+# Errors
+combat.error.permission=You do not have permission to use this command.
+combat.error.player_not_found=Player not found or not online.

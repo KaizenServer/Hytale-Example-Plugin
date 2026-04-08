@@ -2,7 +2,7 @@
   "TranslationProperties": {
     "Name": "server.items.Example_Block.name"
   },
-  "ItemLevel": 600,
+  "ItemLevel": 100,
   "Icon": "Icons/ItemsGenerated/Example_Block.png",
   "Categories": [
     "Blocks.Soils"

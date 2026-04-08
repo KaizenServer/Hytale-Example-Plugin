@@ -1,0 +1,129 @@
+TASK — INTEGRATE AI WORKFLOW SYSTEM INTO EXISTING PROJECT
+
+------------------------------------------------
+CONTEXT
+------------------------------------------------
+
+I have a zip file: ai_workflow_system.zip
+
+It contains a structured AI workflow system with:
+- CLAUDE.md (entry point with protocols)
+- problem_solving/CLAUDE_BIBLE.md (rules from real mistakes)
+- problem_solving/SESSION_PRIMER.md
+- claude_methodologies/ (task_kickoff, session_closure, web_research, chat_rescuing)
+
+I want to integrate this system into my existing project WITHOUT overwriting anything.
+
+My project root is: [INSERT YOUR PROJECT ROOT PATH HERE]
+
+------------------------------------------------
+BEFORE STARTING
+------------------------------------------------
+
+Ask me:
+1. What language would you like me to use?
+2. Confirm the absolute path of the project root.
+
+------------------------------------------------
+STEP 1 — INVENTORY EXISTING PROJECT
+------------------------------------------------
+
+Before touching anything:
+
+1. Check if CLAUDE.md exists at the project root.
+2. Check if problem_solving/ folder exists.
+3. Check if claude_methodologies/ folder exists.
+
+Report exactly what you find. Do not modify anything yet.
+
+------------------------------------------------
+STEP 2 — UNPACK THE ZIP (READ ONLY)
+------------------------------------------------
+
+Read the contents of ai_workflow_system.zip without extracting.
+Map its structure. Do not write any files yet.
+
+------------------------------------------------
+STEP 3 — CONFLICT DETECTION
+------------------------------------------------
+
+Compare each file/section in the zip against the existing project:
+
+For CLAUDE.md:
+- Compare section by section
+- Flag any section that conflicts with or duplicates existing content
+
+For CLAUDE_BIBLE.md:
+- Compare rule by rule
+- Flag duplicates or contradictions
+
+For claude_methodologies/:
+- Check which methodology folders already exist
+- Flag any PROMPT.md that conflicts with existing ones
+
+For each conflict found, present it clearly:
+
+CONFLICT [N]:
+- File: [filename]
+- Existing content: [summary]
+- Incoming content: [summary]
+- Type: duplicate / contradiction / overlap
+
+Do NOT resolve any conflict without asking.
+
+------------------------------------------------
+STEP 4 — ASK USER FOR EACH CONFLICT
+------------------------------------------------
+
+For EACH conflict found in Step 3, ask:
+
+"Conflict [N] — [file] — [short description]
+Options:
+A) Keep existing, discard incoming
+B) Keep incoming, discard existing
+C) Merge both (I will show you the merged result first)
+D) Keep both under different names
+
+What do you want to do?"
+
+Wait for the answer before moving to the next conflict.
+
+------------------------------------------------
+STEP 5 — INTEGRATE NON-CONFLICTING FILES
+------------------------------------------------
+
+For all files in the zip that have NO conflict:
+- Extract and place them at the correct path relative to project root
+- Report each file placed
+
+------------------------------------------------
+STEP 6 — APPLY USER DECISIONS
+------------------------------------------------
+
+Apply each conflict resolution from Step 4.
+For "merge" decisions: show the merged result and ask for approval before writing.
+
+------------------------------------------------
+STEP 7 — VERIFY
+------------------------------------------------
+
+After all files are placed:
+- List the final state of CLAUDE.md, problem_solving/, and claude_methodologies/
+- Confirm no files were lost or overwritten without approval
+
+------------------------------------------------
+RULES
+------------------------------------------------
+
+- Never overwrite an existing file without explicit user approval
+- Never resolve a conflict silently
+- Show before writing — always confirm merges
+- If unsure whether something is a conflict, ask
+
+------------------------------------------------
+GOAL
+------------------------------------------------
+
+The existing project keeps everything it had.
+The new system adds what is missing.
+Conflicts are resolved consciously, one by one.

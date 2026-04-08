@@ -1,33 +1,35 @@
 plugins {
+    java
+    idea
     `maven-publish`
-    id("hytale-mod") version "0.+"
+    // hytale-mod plugin removed — maven.hytale-modding.info is unreachable.
+    // HytaleServer.jar is now referenced directly as a compileOnly file dependency
+    // (same pattern as the hytale-mod-template-maven project).
 }
 
 group = "com.example"
-version = "0.1.0"
+version = "0.6.0"
 val javaVersion = 25
+
+// Hytale install location — set hytale.install_dir in ~/.gradle/gradle.properties
+// pointing to the AppData/Roaming directory (e.g. C:/Users/You/AppData/Roaming).
+// The server JAR is resolved at: <install_dir>/Hytale/install/<channel>/package/game/latest/
+val hytaleInstallBase = findProperty("hytale.install_dir")?.toString()
+    ?: "${System.getProperty("user.home")}/AppData/Roaming"
+val hytaleChannel = findProperty("hytale.channel")?.toString() ?: "release"
+val hytaleBase = "$hytaleInstallBase/Hytale/install/$hytaleChannel/package/game/latest"
+val hytaleServerJar = "$hytaleBase/Server/HytaleServer.jar"
+val hytaleAssetsZip = "$hytaleBase/Assets.zip"
 
 repositories {
     mavenCentral()
-    maven("https://maven.hytale-modding.info/releases") {
-        name = "HytaleModdingReleases"
-    }
 }
 
 dependencies {
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.jspecify)
-}
-
-hytale {
-    // uncomment if you want to add the Assets.zip file to your external libraries;
-    // ⚠️ CAUTION, this file is very big and might make your IDE unresponsive for some time!
-    //
-    // addAssetsDependency = true
-
-    // uncomment if you want to develop your mod against the pre-release version of the game.
-    //
-    // updateChannel = "pre-release"
+    // Hytale server API — resolved from local installation, no Maven repository needed.
+    compileOnly(files(hytaleServerJar))
 }
 
 java {
@@ -93,6 +95,29 @@ idea {
     }
 }
 
+// Run the Hytale development server with this plugin loaded.
+// Equivalent to the exec-maven-plugin run-server goal in hytale-mod-template-maven.
+tasks.register<Exec>("runServer") {
+    group = "hytale"
+    description = "Run the Hytale development server with this plugin."
+    dependsOn("jar")
+
+    val devServerDir = file("dev-server")
+    doFirst { devServerDir.mkdirs() }
+    workingDir(devServerDir)
+
+    val javaHome = System.getProperty("java.home")
+    val javaBin = "$javaHome/bin/java"
+    val modsDir = layout.buildDirectory.get().asFile.absolutePath + "/libs"
+
+    commandLine(
+        javaBin, "-jar", hytaleServerJar,
+        "--allow-op",
+        "--assets", hytaleAssetsZip,
+        "--mods=$modsDir"
+    )
+}
+
 val syncAssets = tasks.register<Copy>("syncAssets") {
     group = "hytale"
     description = "Automatically syncs assets from Build back to Source after server stops."
@@ -110,18 +135,14 @@ val syncAssets = tasks.register<Copy>("syncAssets") {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 
     doLast {
-        println("✅ Assets successfully synced from Game to Source Code!")
+        println("Assets successfully synced from Game to Source Code!")
     }
 }
 
 afterEvaluate {
-    // Now Gradle will find it, because the plugin has finished working
-    val targetTask = tasks.findByName("runServer") ?: tasks.findByName("server")
-
+    val targetTask = tasks.findByName("runServer")
     if (targetTask != null) {
         targetTask.finalizedBy(syncAssets)
-        logger.lifecycle("✅ specific task '${targetTask.name}' hooked for auto-sync.")
-    } else {
-        logger.warn("⚠️ Could not find 'runServer' or 'server' task to hook auto-sync into.")
+        logger.lifecycle("Task '${targetTask.name}' hooked for auto-sync.")
     }
 }

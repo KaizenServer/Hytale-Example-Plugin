@@ -2,9 +2,9 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        maven("https://maven.hytale-modding.info/releases") {
-            name = "HytaleModdingReleases"
-        }
+        // HytaleModdingReleases removed — maven.hytale-modding.info is unreachable.
+        // The hytale-mod plugin is no longer needed: HytaleServer.jar is referenced
+        // directly as a compileOnly file dependency in build.gradle.kts.
     }
 }
 
