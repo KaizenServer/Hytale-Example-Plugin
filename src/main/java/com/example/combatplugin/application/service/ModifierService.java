@@ -25,9 +25,12 @@ public class ModifierService {
     /**
      * Builds the full list of passive CombatModifiers active for the given profile.
      * Called when talents change and when applying stats on login.
+     * Includes both talent-based and level-based stat bonuses.
      */
     public List<CombatModifier> computeActiveModifiers(PlayerProfile profile) {
         List<CombatModifier> result = new ArrayList<>();
+
+        // Add talent-based modifiers
         for (Map.Entry<String, Integer> entry : profile.getTalentRanks().entrySet()) {
             TalentEffect effect = effectRegistry.get(entry.getKey());
             if (effect == null) continue;
@@ -37,6 +40,17 @@ public class ModifierService {
                 result.addAll(effect.getModifiers());
             }
         }
+
+        // Add level-based stat bonuses: +5 HP/Mana and +0.1 Stamina per level above 1
+        int levelsAboveOne = Math.max(0, profile.getLevel() - 1);
+        if (levelsAboveOne > 0) {
+            int hpManaBonus = levelsAboveOne * 5;
+            float staminaBonus = levelsAboveOne * 0.1f;
+            result.add(CombatModifier.flatAdd(com.example.combatplugin.domain.model.StatTarget.HEALTH, hpManaBonus, "leveling"));
+            result.add(CombatModifier.flatAdd(com.example.combatplugin.domain.model.StatTarget.MANA, hpManaBonus, "leveling"));
+            result.add(CombatModifier.flatAdd(com.example.combatplugin.domain.model.StatTarget.STAMINA, staminaBonus, "leveling"));
+        }
+
         return result;
     }
 

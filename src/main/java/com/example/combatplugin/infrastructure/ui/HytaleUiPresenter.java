@@ -8,6 +8,7 @@ import com.example.combatplugin.domain.model.ClassDefinition;
 import com.example.combatplugin.domain.model.PlayerProfile;
 import com.example.combatplugin.domain.model.TalentDefinition;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 
 import java.util.List;
@@ -18,9 +19,8 @@ import java.util.List;
  * Confirmed API (from inventory-management docs):
  *   player.getPageManager().openCustomPage(ref, store, page)
  *
- * INTEGRATION POINT: If getPageManager() or openCustomPage() have a different
- * name in the decompiled JARs, update the two method calls in showClassMenu /
- * showTalentMenu below.
+ * No fallback: if the UI fails, the error is logged and nothing is sent to chat.
+ * Fix UI errors by reading the server logs.
  */
 public class HytaleUiPresenter implements IUiPresenter {
 
@@ -29,7 +29,6 @@ public class HytaleUiPresenter implements IUiPresenter {
     private final ChooseClassUseCase chooseClassUseCase;
     private final UnlockTalentUseCase unlockTalentUseCase;
     private final RemoveTalentRankUseCase removeTalentRankUseCase;
-    private final TextFallbackUiPresenter fallback = new TextFallbackUiPresenter();
 
     public HytaleUiPresenter(ChooseClassUseCase chooseClassUseCase,
                               UnlockTalentUseCase unlockTalentUseCase,
@@ -42,57 +41,46 @@ public class HytaleUiPresenter implements IUiPresenter {
     @Override
     public void showClassMenu(PlayerContext pctx, List<ClassDefinition> availableClasses,
                               PlayerProfile currentProfile) {
-        Player player = pctx.player();
-        if (player == null || pctx.ref() == null || pctx.store() == null) {
-            fallback.showClassMenu(pctx, availableClasses, currentProfile);
-            return;
-        }
         try {
             ClassSelectionPage page = new ClassSelectionPage(
                     pctx.playerRef(), pctx.uuid(),
                     availableClasses, currentProfile,
                     chooseClassUseCase);
-            // Confirmed API from docs: player.getPageManager().openCustomPage(ref, store, page)
-            player.getPageManager().openCustomPage(pctx.ref(), pctx.store(), page);
+            pctx.player().getPageManager().openCustomPage(pctx.ref(), pctx.store(), page);
         } catch (Throwable e) {
             LOGGER.atWarning().log("[HytaleUiPresenter] Failed to open ClassSelectionPage: %s", e.toString());
-            fallback.showClassMenu(pctx, availableClasses, currentProfile);
         }
     }
 
     @Override
     public void showTalentMenu(PlayerContext pctx, List<TalentDefinition> classTalents,
                                PlayerProfile currentProfile) {
-        Player player = pctx.player();
-        if (player == null || pctx.ref() == null || pctx.store() == null) {
-            fallback.showTalentMenu(pctx, classTalents, currentProfile);
-            return;
-        }
         try {
             TalentTreePage page = new TalentTreePage(
                     pctx.playerRef(), pctx.uuid(),
                     classTalents, currentProfile,
                     unlockTalentUseCase, removeTalentRankUseCase);
-            // Confirmed API from docs: player.getPageManager().openCustomPage(ref, store, page)
-            player.getPageManager().openCustomPage(pctx.ref(), pctx.store(), page);
+            pctx.player().getPageManager().openCustomPage(pctx.ref(), pctx.store(), page);
         } catch (Throwable e) {
             LOGGER.atWarning().log("[HytaleUiPresenter] Failed to open TalentTreePage: %s", e.toString());
-            fallback.showTalentMenu(pctx, classTalents, currentProfile);
         }
     }
 
     @Override
     public void sendInfo(PlayerContext pctx, String message) {
-        fallback.sendInfo(pctx, message);
+        Player player = pctx.player();
+        if (player != null) player.sendMessage(Message.raw("§7" + message));
     }
 
     @Override
     public void sendError(PlayerContext pctx, String message) {
-        fallback.sendError(pctx, message);
+        Player player = pctx.player();
+        if (player != null) player.sendMessage(Message.raw("§c✘ " + message));
     }
 
     @Override
     public void sendSuccess(PlayerContext pctx, String message) {
-        fallback.sendSuccess(pctx, message);
+        Player player = pctx.player();
+        if (player != null) player.sendMessage(Message.raw("§a✔ " + message));
     }
 }

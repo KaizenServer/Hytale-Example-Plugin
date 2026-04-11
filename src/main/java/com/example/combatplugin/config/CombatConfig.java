@@ -13,17 +13,19 @@ public final class CombatConfig {
     private final double xpCurveExponent;
     private final int talentPointsPerLevel;
     private final boolean debugLogging;
+    private final boolean xpDebugMessages;
 
     /** Defaults used when no config file is found. */
-    public static final CombatConfig DEFAULT = new CombatConfig(50, 100.0, 1.5, 1, false);
+    public static final CombatConfig DEFAULT = new CombatConfig(30, 100.0, 1.5, 1, false, true);
 
     public CombatConfig(int maxLevel, double xpCurveBase, double xpCurveExponent,
-                        int talentPointsPerLevel, boolean debugLogging) {
+                        int talentPointsPerLevel, boolean debugLogging, boolean xpDebugMessages) {
         this.maxLevel = maxLevel;
         this.xpCurveBase = xpCurveBase;
         this.xpCurveExponent = xpCurveExponent;
         this.talentPointsPerLevel = talentPointsPerLevel;
         this.debugLogging = debugLogging;
+        this.xpDebugMessages = xpDebugMessages;
     }
 
     public int maxLevel()               { return maxLevel; }
@@ -31,6 +33,8 @@ public final class CombatConfig {
     public double xpCurveExponent()     { return xpCurveExponent; }
     public int talentPointsPerLevel()   { return talentPointsPerLevel; }
     public boolean debugLogging()       { return debugLogging; }
+    /** If true, players see "+50 XP" and "Level Up!" chat messages on XP gain. */
+    public boolean xpDebugMessages()   { return xpDebugMessages; }
 
     @Override
     public String toString() {

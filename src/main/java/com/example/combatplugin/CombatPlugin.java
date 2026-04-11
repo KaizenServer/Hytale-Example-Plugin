@@ -8,24 +8,22 @@ import com.example.combatplugin.application.service.ModifierService;
 import com.example.combatplugin.application.service.ProfileService;
 import com.example.combatplugin.application.service.ProgressionService;
 import com.example.combatplugin.application.service.TalentService;
+import com.example.combatplugin.application.usecase.AwardXpUseCase;
 import com.example.combatplugin.application.usecase.ChooseClassUseCase;
 import com.example.combatplugin.application.usecase.RemoveTalentRankUseCase;
-import com.example.combatplugin.application.usecase.ResetClassUseCase;
-import com.example.combatplugin.application.usecase.ResetTalentsUseCase;
 import com.example.combatplugin.application.usecase.UnlockTalentUseCase;
 import com.example.combatplugin.config.CombatConfig;
+import com.example.combatplugin.infrastructure.command.LevelCommandCollection;
+import com.example.combatplugin.infrastructure.command.XpCommandCollection;
 import com.example.combatplugin.data.DefaultClasses;
 import com.example.combatplugin.data.TalentEffects;
 import com.example.combatplugin.domain.model.ClassDefinition;
 import com.example.combatplugin.domain.model.CombatClass;
 import com.example.combatplugin.infrastructure.command.ClassCommandCollection;
-import com.example.combatplugin.infrastructure.command.LevelCommandCollection;
 import com.example.combatplugin.infrastructure.command.TalentsCommand;
-import com.example.combatplugin.infrastructure.command.XpCommandCollection;
 import com.example.combatplugin.infrastructure.event.DamageModifierSystem;
 import com.example.combatplugin.infrastructure.event.DeathSynergySystem;
 import com.example.combatplugin.infrastructure.event.PlayerEventListener;
-
 import com.example.combatplugin.infrastructure.persistence.EcsProfileRepository;
 import com.example.combatplugin.infrastructure.persistence.PlayerProfileComponent;
 import com.example.combatplugin.infrastructure.stat.HytaleStatApplicator;
@@ -56,7 +54,7 @@ import java.util.Map;
  *   7. UI presenter
  *   8. ECS systems
  *   9. Global events
- *  10. Commands
+ *  10. Commands — /class, /talents, /xp, /level
  */
 public class CombatPlugin extends JavaPlugin {
 
@@ -82,8 +80,8 @@ public class CombatPlugin extends JavaPlugin {
         // ── 3. Services (no Hytale deps) ──────────────────────────────────────
         ClassService       classService       = new ClassService(classRegistry);
         TalentService      talentService      = new TalentService(talentEffects.getTalentMap());
-        ProgressionService progressionService = new ProgressionService(config);
         ModifierService    modifierService    = new ModifierService(talentEffects.getEffectMap());
+        ProgressionService progressionService = new ProgressionService(config);
 
         // ── 4. ECS component registration ─────────────────────────────────────
         ComponentType<EntityStore, PlayerProfileComponent> profileComponentType =
@@ -96,47 +94,46 @@ public class CombatPlugin extends JavaPlugin {
         IStatApplicator      statApplicator    = new HytaleStatApplicator(modifierService);
         ISummonAdapter       summonAdapter     = new HytaleSummonAdapter();
 
-        // ── 6. Use cases (shared by UI and commands) ──────────────────────────
+        // ── 6. Use cases (shared by UI presenter and systems) ────────────────
         ChooseClassUseCase      chooseClassUseCase  = new ChooseClassUseCase(
                 classService, profileService, statApplicator);
         UnlockTalentUseCase     unlockTalentUseCase = new UnlockTalentUseCase(
                 talentService, profileService, statApplicator);
         RemoveTalentRankUseCase removeTalentUseCase = new RemoveTalentRankUseCase(
                 profileService, talentEffects.getTalentMap(), statApplicator);
-        ResetClassUseCase       resetClassUseCase   = new ResetClassUseCase(
-                profileService, talentService, statApplicator);
-        ResetTalentsUseCase     resetTalentsUseCase = new ResetTalentsUseCase(
-                profileService, talentService, statApplicator);
+        AwardXpUseCase          awardXpUseCase      = new AwardXpUseCase(
+                profileService, progressionService);
 
         // ── 7. UI presenter ───────────────────────────────────────────────────
         IUiPresenter uiPresenter = new HytaleUiPresenter(
                 chooseClassUseCase, unlockTalentUseCase, removeTalentUseCase);
 
         // ── 8. ECS systems ────────────────────────────────────────────────────
-        ProfileInitSystem profileInitSystem = new ProfileInitSystem(profileComponentType);
-        DamageModifierSystem damageSystem = new DamageModifierSystem(
+        ProfileInitSystem    profileInitSystem = new ProfileInitSystem(
+                profileRepository, statApplicator, progressionService);
+        DamageModifierSystem damageSystem      = new DamageModifierSystem(
                 profileComponentType, profileService, modifierService);
-        DeathSynergySystem deathSystem = new DeathSynergySystem(
-                profileService, modifierService, summonAdapter);
+        DeathSynergySystem   deathSystem       = new DeathSynergySystem(
+                profileService, modifierService, summonAdapter, awardXpUseCase,
+                statApplicator, config, progressionService);
 
         this.getEntityStoreRegistry().registerSystem(profileInitSystem);
         this.getEntityStoreRegistry().registerSystem(damageSystem);
         this.getEntityStoreRegistry().registerSystem(deathSystem);
 
         // ── 9. Global events ──────────────────────────────────────────────────
-        PlayerEventListener playerListener = new PlayerEventListener(profileRepository, statApplicator);
-        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class,      playerListener::onJoin);
-        this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class,  playerListener::onLeave);
+        PlayerEventListener playerListener = new PlayerEventListener(
+                profileRepository, statApplicator, progressionService);
+        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class,     playerListener::onJoin);
+        this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, playerListener::onLeave);
 
         // ── 10. Commands ──────────────────────────────────────────────────────
         this.getCommandRegistry().registerCommand(
-                new ClassCommandCollection(classService, profileService,
-                        resetClassUseCase, uiPresenter));
+                new ClassCommandCollection(classService, profileService, uiPresenter));
         this.getCommandRegistry().registerCommand(
-                new TalentsCommand(unlockTalentUseCase, resetTalentsUseCase,
-                        talentService, profileService, uiPresenter));
+                new TalentsCommand(talentService, profileService, uiPresenter));
         this.getCommandRegistry().registerCommand(
-                new XpCommandCollection(profileService, progressionService, uiPresenter));
+                new XpCommandCollection(profileService, progressionService, uiPresenter, statApplicator));
         this.getCommandRegistry().registerCommand(
                 new LevelCommandCollection(profileService, progressionService, uiPresenter));
 

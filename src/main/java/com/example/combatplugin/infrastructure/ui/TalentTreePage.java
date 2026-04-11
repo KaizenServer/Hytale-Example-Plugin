@@ -12,7 +12,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
@@ -38,8 +37,8 @@ import java.util.UUID;
 public class TalentTreePage extends InteractiveCustomUIPage<TalentTreePage.TalentPageEvent> {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    // ASSUMPTION: Hytale resolves .ui files relative to Common/UI/
-    private static final String UI_KEY = "Custom/TalentTreePage.ui";
+    // Official docs: .ui files in Common/UI/Custom/ are referenced by filename only.
+    private static final String UI_KEY = "TalentTreePage.ui";
 
     private final List<TalentDefinition> talents;
     private PlayerProfile profile;
@@ -69,36 +68,34 @@ public class TalentTreePage extends InteractiveCustomUIPage<TalentTreePage.Talen
         cmd.append(UI_KEY);
 
         // Header
-        cmd.set("#PageClass", Message.raw(profile.getCombatClass().name() + " Talent Tree"));
-        cmd.set("#PagePoints", Message.raw("Points: " + profile.getTalentPoints()));
+        // Note: cmd.set uses ".Text" property selector — reference: Ejemplos/UI/ClassSelectionPage.java
+        cmd.set("#PageClass.Text", profile.getCombatClass().name() + " Talent Tree");
+        cmd.set("#PagePoints.Text", "Points: " + profile.getTalentPoints());
 
-        // Populate each node
+        // Populate each node.
+        // IDs are flat and unique: #N0Name, #N0Rank, #N0LvlReq, #N0Btn, ...
         for (int i = 0; i < 16 && i < talents.size(); i++) {
             TalentDefinition talent = talents.get(i);
-            String nodeId = "#Node" + i;
             int currentRank = profile.getTalentRank(talent.id());
-            boolean locked = isLocked(talent);
 
-            cmd.set(nodeId + " #NodeName", Message.raw(talent.displayName()));
-            cmd.set(nodeId + " #NodeRank",
-                    Message.raw(currentRank + "/" + talent.maxRank()));
+            cmd.set("#N" + i + "Name.Text", talent.displayName());
+            cmd.set("#N" + i + "Rank.Text", currentRank + "/" + talent.maxRank());
 
             String lvlText = talent.levelRequirement() > 0
                     ? "Lvl " + talent.levelRequirement() : "";
-            cmd.set(nodeId + " #NodeLvlReq", Message.raw(lvlText));
-            cmd.set(nodeId + " #NodeLock", locked);
+            cmd.set("#N" + i + "LvlReq.Text", lvlText);
 
             // Left-click → unlock / add rank
             evt.addEventBinding(
                     CustomUIEventBindingType.Activating,
-                    nodeId + " #NodeBtn",
-                    EventData.of("action", "unlock").append("talentId", talent.id())
+                    "#N" + i + "Btn",
+                    EventData.of("Action", "unlock").append("TalentId", talent.id())
             );
             // Right-click → remove rank
             evt.addEventBinding(
                     CustomUIEventBindingType.RightClicking,
-                    nodeId + " #NodeBtn",
-                    EventData.of("action", "remove").append("talentId", talent.id())
+                    "#N" + i + "Btn",
+                    EventData.of("Action", "remove").append("TalentId", talent.id())
             );
         }
     }
@@ -128,23 +125,9 @@ public class TalentTreePage extends InteractiveCustomUIPage<TalentTreePage.Talen
                     data.action, data.talentId, e.getMessage());
             // Show error in status line without full rebuild
             UICommandBuilder update = new UICommandBuilder();
-            update.set("#StatusLine", Message.raw("§c" + e.getMessage()));
+            update.set("#StatusLine.Text", "§c" + e.getMessage());
             sendUpdate(update);
         }
-    }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    /**
-     * A talent is visually locked if prerequisites are not met or level is insufficient.
-     * The server still enforces this; this is only for the visual lock overlay.
-     */
-    private boolean isLocked(TalentDefinition talent) {
-        if (profile.getLevel() < talent.levelRequirement()) return true;
-        for (String prereq : talent.prerequisiteIds()) {
-            if (!profile.hasTalent(prereq)) return true;
-        }
-        return false;
     }
 
     // ── Event data codec ──────────────────────────────────────────────────────
@@ -156,9 +139,9 @@ public class TalentTreePage extends InteractiveCustomUIPage<TalentTreePage.Talen
         /** Returns a fresh BuilderCodec each call — avoids ExceptionInInitializerError. */
         public static BuilderCodec<TalentPageEvent> codec() {
             return BuilderCodec.builder(TalentPageEvent.class, TalentPageEvent::new)
-                    .append(new KeyedCodec<>("action",   Codec.STRING),
+                    .append(new KeyedCodec<>("Action",   Codec.STRING),
                             (d, v) -> d.action   = v, d -> d.action).add()
-                    .append(new KeyedCodec<>("talentId", Codec.STRING),
+                    .append(new KeyedCodec<>("TalentId", Codec.STRING),
                             (d, v) -> d.talentId = v, d -> d.talentId).add()
                     .build();
         }

@@ -16,12 +16,12 @@ public class ProgressionService {
 
     /**
      * XP required to reach the given level from scratch.
-     * Formula: base * (level ^ exponent)
-     * Example defaults: base=100, exponent=1.5 → level 5 requires 100 * 5^1.5 ≈ 1118 XP.
+     * Formula: XP(n) = 45n² + 100n
+     * Example: level 5 requires 45(25) + 100(5) = 1125 + 500 = 1625 XP.
      */
     public long xpRequiredForLevel(int level) {
         if (level <= 1) return 0L;
-        return (long) (config.xpCurveBase() * Math.pow(level - 1, config.xpCurveExponent()));
+        return 45L * level * level + 100L * level;
     }
 
     /**
@@ -34,6 +34,11 @@ public class ProgressionService {
             level++;
         }
         return level;
+    }
+
+    /** The configured maximum level. Players cannot exceed this. */
+    public int getMaxLevel() {
+        return config.maxLevel();
     }
 
     /** Talent points granted when reaching the given level (always talentPointsPerLevel per level). */

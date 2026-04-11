@@ -24,10 +24,20 @@ public class AwardXpUseCase {
     public Result execute(UUID uuid, long xpAmount) {
         PlayerProfile profile = profileService.getOrDefault(uuid);
 
-        long newXp = profile.getXp() + xpAmount;
         int oldLevel = profile.getLevel();
-        int newLevel = progressionService.levelFromXp(newXp);
-        newLevel = Math.min(newLevel, progressionService.levelFromXp(Long.MAX_VALUE)); // cap guard
+        int maxLevel = progressionService.getMaxLevel();
+
+        // If already at max, nothing to do
+        if (oldLevel >= maxLevel) {
+            return new Result(oldLevel, oldLevel, 0, 0, false);
+        }
+
+        long newXp = profile.getXp() + xpAmount;
+        // Cap XP so it never exceeds the total needed to reach maxLevel
+        long xpCap = progressionService.xpRequiredForLevel(maxLevel);
+        if (newXp > xpCap) newXp = xpCap;
+
+        int newLevel = Math.min(progressionService.levelFromXp(newXp), maxLevel);
 
         int pointsGranted = 0;
         if (newLevel > oldLevel) {

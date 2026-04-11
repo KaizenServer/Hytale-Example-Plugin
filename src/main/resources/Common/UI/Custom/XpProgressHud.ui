@@ -1,0 +1,24 @@
+// CombatPlugin — XP Progress HUD
+// Text-only HUD: Anchor is a structured type and cannot be set via cmd.set().
+// Only .Text properties are set dynamically from Java.
+// Displays: [Lv. X]  [XXXX / XXXX XP]
+
+Group {
+  LayoutMode: Left;
+  Padding: (Full: 4);
+  Background: #000000(0.00);
+
+  Label #XpLevel {
+    Style: (RenderBold: true, TextColor: #cc88ff(1.0), FontSize: 12);
+    Anchor: (Width: 52, Height: 20);
+    Text: "Lv. 1";
+  }
+
+  Group { Anchor: (Width: 8); }
+
+  Label #XpText {
+    Style: (TextColor: #ccaaff(0.9), FontSize: 12);
+    Anchor: (Width: 180, Height: 20);
+    Text: "0 / 245 XP";
+  }
+}

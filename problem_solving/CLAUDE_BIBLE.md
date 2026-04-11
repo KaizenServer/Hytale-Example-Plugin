@@ -82,6 +82,16 @@ The task_kickoff methodology applies to every task — including research tasks,
 
 ---
 
+## 9. Single-fix diagnosis when multiple root causes exist
+
+**What happened:**
+v0.13.0 fixed only one root cause (descendant selector IDs) but the crash persisted identically. The fix was applied confidently. The user had to report that the crash was unchanged and explicitly identify that there were likely multiple causes. A second diagnosis then found two additional root causes: (1) duplicate .ui files in JAR (both `Pages/` and `UI/Custom/` copies being packaged), and (2) wrong `cmd.set` API (passing `Message.raw()` instead of a plain String with `.Text` suffix).
+
+**Rule:**
+When a crash persists after a fix with the exact same error, do not assume the fix was correct and the crash is coincidental. Check: was the fix actually deployed? Are there other potential null sources in the same call stack? When fixing a null pointer in a UI build method, audit ALL `cmd.set()` and `evt.addEventBinding()` calls in the same method for additional null sources before declaring the fix complete.
+
+---
+
 ## 8. Agents using bash internally triggered Microsoft Store on Windows
 
 **What happened:**

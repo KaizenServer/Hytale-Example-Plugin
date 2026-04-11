@@ -1,5 +1,6 @@
 package com.example.combatplugin.infrastructure.command;
 
+import com.example.combatplugin.application.port.IStatApplicator;
 import com.example.combatplugin.application.port.IUiPresenter;
 import com.example.combatplugin.application.service.ProfileService;
 import com.example.combatplugin.application.service.ProgressionService;
@@ -14,10 +15,12 @@ public class XpCommandCollection extends AbstractCommandCollection {
 
     public XpCommandCollection(ProfileService profileService,
                                 ProgressionService progressionService,
-                                IUiPresenter uiPresenter) {
+                                IUiPresenter uiPresenter,
+                                IStatApplicator statApplicator) {
         super("xp", "Manage player XP (admin). Use /xp add <amount>.");
 
         AwardXpUseCase awardUseCase = new AwardXpUseCase(profileService, progressionService);
-        addSubCommand(new AddXpCommand(awardUseCase, uiPresenter));
+        addSubCommand(new AddXpCommand(awardUseCase, uiPresenter, statApplicator,
+                profileService, progressionService));
     }
 }

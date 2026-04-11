@@ -11,7 +11,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.pages.InteractiveCustomUIPage;
 import com.hypixel.hytale.server.core.ui.builder.EventData;
 // Note: EventData is the Hytale UI event payload record (factory: EventData.of(key, value))
@@ -36,10 +35,9 @@ import java.util.UUID;
 public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPage.ClassEventData> {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    // ASSUMPTION: Plugin .ui files are served by the client at "Pages/<filename>"
-    // matching the same convention as game-internal pages (Pages/RespawnPage.ui, etc.)
-    // ASSUMPTION: Hytale resolves .ui files relative to Common/UI/
-    private static final String UI_KEY = "Custom/ClassSelectionPage.ui";
+    // Official docs: .ui files in Common/UI/Custom/ are referenced by filename only.
+    // See: HytaleModding.dev/guides/plugin/ui — "uiCommandBuilder.append("MyUI.ui")"
+    private static final String UI_KEY = "ClassSelectionPage.ui";
 
     private final List<ClassDefinition> classes;
     private PlayerProfile profile;
@@ -67,31 +65,29 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
         cmd.append(UI_KEY);
 
         // Header
+        // Note: cmd.set uses ".Text" property selector — reference: Ejemplos/UI/ClassSelectionPage.java
         String headerText = profile.hasClass()
                 ? "Your Class: " + profile.getCombatClass().name()
                 : "Choose Your Class";
-        cmd.set("#PageTitle", Message.raw(headerText));
+        cmd.set("#PageTitle.Text", headerText);
 
-        // Populate 4 class cards
+        // Populate 4 class cards.
+        // IDs are flat and unique: #C0Title, #C0Role, #C0Desc, #C0Btn, #C0BtnLabel, ...
         for (int i = 0; i < 4 && i < classes.size(); i++) {
             ClassDefinition cls = classes.get(i);
-            String cardPrefix = "#Card" + i;
 
-            cmd.set(cardPrefix + " #CardTitle", Message.raw(cls.displayName()));
-            cmd.set(cardPrefix + " #CardRole",
-                    Message.raw(cls.primaryRole() + " / " + cls.secondaryRole()));
-            cmd.set(cardPrefix + " #CardDesc", Message.raw(cls.description()));
+            cmd.set("#C" + i + "Title.Text", cls.displayName());
+            cmd.set("#C" + i + "Role.Text", cls.primaryRole() + " / " + cls.secondaryRole());
+            cmd.set("#C" + i + "Desc.Text", cls.description());
 
             boolean isSelected = profile.hasClass()
                     && profile.getCombatClass() == cls.id();
-            String btnLabel = isSelected ? "✓ Selected" : "Choose";
-            cmd.set(cardPrefix + " #CardBtnLabel", Message.raw(btnLabel));
+            cmd.set("#C" + i + "BtnLabel.Text", isSelected ? "Selected" : "Choose");
 
-            // Bind left-click to choose action
             evt.addEventBinding(
                     CustomUIEventBindingType.Activating,
-                    cardPrefix + " #CardBtn",
-                    EventData.of("action", "choose").append("classId", cls.id().name().toLowerCase())
+                    "#C" + i + "Btn",
+                    EventData.of("Action", "choose").append("ClassId", cls.id().name().toLowerCase())
             );
         }
 
@@ -99,7 +95,7 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
         String status = profile.hasClass()
                 ? "Current class: " + profile.getCombatClass().name() + " | Level " + profile.getLevel()
                 : "You have not chosen a class yet.";
-        cmd.set("#StatusLine", Message.raw(status));
+        cmd.set("#StatusLine.Text", status);
     }
 
     // ── Event handling ────────────────────────────────────────────────────────
@@ -119,7 +115,7 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
             LOGGER.atWarning().log("[ClassSelectionPage] Class choose failed: %s", e.getMessage());
             // Update status line with the error
             UICommandBuilder update = new UICommandBuilder();
-            update.set("#StatusLine", Message.raw("§c" + e.getMessage()));
+            update.set("#StatusLine.Text", "§c" + e.getMessage());
             sendUpdate(update);
         }
     }
@@ -134,9 +130,9 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
         /** Returns a fresh BuilderCodec each call — avoids ExceptionInInitializerError. */
         public static BuilderCodec<ClassEventData> codec() {
             return BuilderCodec.builder(ClassEventData.class, ClassEventData::new)
-                    .append(new KeyedCodec<>("action",  Codec.STRING),
+                    .append(new KeyedCodec<>("Action",  Codec.STRING),
                             (d, v) -> d.action  = v, d -> d.action).add()
-                    .append(new KeyedCodec<>("classId", Codec.STRING),
+                    .append(new KeyedCodec<>("ClassId", Codec.STRING),
                             (d, v) -> d.classId = v, d -> d.classId).add()
                     .build();
         }

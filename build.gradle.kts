@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.example"
-version = "0.6.0"
+version = "0.21.0"
 val javaVersion = 25
 
 // Hytale install location — set hytale.install_dir in ~/.gradle/gradle.properties

@@ -1,6 +1,7 @@
 // CombatPlugin — Class Selection Page
-// 4 class cards, 200x280px each, 20px gap -> total inner width = 860
-// All values are hardcoded literals (no arithmetic) for parser safety.
+// cmd.append("ClassSelectionPage.ui") inlines this file's content directly.
+// IMPORTANT: All IDs must be globally unique — Hytale has no descendant selector support.
+// Selectors in Java must be flat: "#C0Title", not "#Card0 #CardTitle".
 
 Group {
   Background: #000000(0.65);
@@ -28,25 +29,25 @@ Group {
         Background: #1a1a2e(0.92);
         Padding: (Full: 12);
 
-        Label #CardTitle {
+        Label #C0Title {
           Style: (RenderBold: true, FontSize: 14);
           Anchor: (Height: 22);
           Text: "";
         }
 
-        Label #CardRole {
+        Label #C0Role {
           Style: (TextColor: #aaaacc(0.9), FontSize: 11);
           Anchor: (Height: 18);
           Text: "";
         }
 
-        Label #CardDesc {
+        Label #C0Desc {
           Style: (TextColor: #cccccc(0.8), FontSize: 11);
           Anchor: (Height: 80);
           Text: "";
         }
 
-        Button #CardBtn {
+        Button #C0Btn {
           Anchor: (Width: 176, Height: 30);
           Style: (
             Default: (Background: #3a3a6e(0.95)),
@@ -54,7 +55,7 @@ Group {
             Pressed: (Background: #4a4a8e(0.95))
           );
 
-          Label #CardBtnLabel {
+          Label #C0BtnLabel {
             Style: (FontSize: 12);
             Text: "Choose";
           }
@@ -69,25 +70,25 @@ Group {
         Background: #1a1a2e(0.92);
         Padding: (Full: 12);
 
-        Label #CardTitle {
+        Label #C1Title {
           Style: (RenderBold: true, FontSize: 14);
           Anchor: (Height: 22);
           Text: "";
         }
 
-        Label #CardRole {
+        Label #C1Role {
           Style: (TextColor: #aaaacc(0.9), FontSize: 11);
           Anchor: (Height: 18);
           Text: "";
         }
 
-        Label #CardDesc {
+        Label #C1Desc {
           Style: (TextColor: #cccccc(0.8), FontSize: 11);
           Anchor: (Height: 80);
           Text: "";
         }
 
-        Button #CardBtn {
+        Button #C1Btn {
           Anchor: (Width: 176, Height: 30);
           Style: (
             Default: (Background: #3a3a6e(0.95)),
@@ -95,7 +96,7 @@ Group {
             Pressed: (Background: #4a4a8e(0.95))
           );
 
-          Label #CardBtnLabel {
+          Label #C1BtnLabel {
             Style: (FontSize: 12);
             Text: "Choose";
           }
@@ -110,25 +111,25 @@ Group {
         Background: #1a1a2e(0.92);
         Padding: (Full: 12);
 
-        Label #CardTitle {
+        Label #C2Title {
           Style: (RenderBold: true, FontSize: 14);
           Anchor: (Height: 22);
           Text: "";
         }
 
-        Label #CardRole {
+        Label #C2Role {
           Style: (TextColor: #aaaacc(0.9), FontSize: 11);
           Anchor: (Height: 18);
           Text: "";
         }
 
-        Label #CardDesc {
+        Label #C2Desc {
           Style: (TextColor: #cccccc(0.8), FontSize: 11);
           Anchor: (Height: 80);
           Text: "";
         }
 
-        Button #CardBtn {
+        Button #C2Btn {
           Anchor: (Width: 176, Height: 30);
           Style: (
             Default: (Background: #3a3a6e(0.95)),
@@ -136,7 +137,7 @@ Group {
             Pressed: (Background: #4a4a8e(0.95))
           );
 
-          Label #CardBtnLabel {
+          Label #C2BtnLabel {
             Style: (FontSize: 12);
             Text: "Choose";
           }
@@ -151,25 +152,25 @@ Group {
         Background: #1a1a2e(0.92);
         Padding: (Full: 12);
 
-        Label #CardTitle {
+        Label #C3Title {
           Style: (RenderBold: true, FontSize: 14);
           Anchor: (Height: 22);
           Text: "";
         }
 
-        Label #CardRole {
+        Label #C3Role {
           Style: (TextColor: #aaaacc(0.9), FontSize: 11);
           Anchor: (Height: 18);
           Text: "";
         }
 
-        Label #CardDesc {
+        Label #C3Desc {
           Style: (TextColor: #cccccc(0.8), FontSize: 11);
           Anchor: (Height: 80);
           Text: "";
         }
 
-        Button #CardBtn {
+        Button #C3Btn {
           Anchor: (Width: 176, Height: 30);
           Style: (
             Default: (Background: #3a3a6e(0.95)),
@@ -177,7 +178,7 @@ Group {
             Pressed: (Background: #4a4a8e(0.95))
           );
 
-          Label #CardBtnLabel {
+          Label #C3BtnLabel {
             Style: (FontSize: 12);
             Text: "Choose";
           }
