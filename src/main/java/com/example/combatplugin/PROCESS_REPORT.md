@@ -14,13 +14,18 @@ Refactor all layers of the existing code:
 - Fix logic bugs (SetLevelUseCase spent points calculation)
 - Add configuration files and technical README
 
-## Current State (v0.14.0 — 2026-04-09)
+## Current State (v0.23.0 — 2026-04-12) — TASK COMPLETE
+
 - BUILD SUCCESSFUL, 0 errors, 0 warnings
-- JAR contains exactly 2 .ui files: `Common/UI/Custom/ClassSelectionPage.ui`, `Common/UI/Custom/TalentTreePage.ui`
-- All `cmd.set()` calls use `.Text` property suffix with plain Strings
-- All element IDs are globally unique (no descendant selectors)
-- Awaiting in-game test of `/class` and `/talents`
-- Known pending issue: ECS persistence (getHolder() returns null on join; workaround in place)
+- UI system: `/class` and `/talents` working in-game
+- Level system: XP gain, level-up, MAX_LEVEL=30, XP=20+2*level — working
+- File persistence: `playerdata/<uuid>.properties` — working since v0.19.0
+- **Stat system: level-based bonuses now visible in character panel** — v0.23.0
+  - Root cause of prior failure: `addStatValue`/`resetStatValue` modify current value only (like healing), not the max stat displayed in the panel
+  - Fix: `EntityStatMap.putModifier(statIdx, key, new StaticModifier(ModifierTarget.MAX, CalculationType.ADDITIVE, value))` — named modifier targeting MAX stat
+  - `removeModifier(statIdx, key)` to reset before re-applying
+- ProfileInitSystem (RefChangeSystem) confirmed dead — never fires for built-in Hytale components; stats applied in `PlayerEventListener.onJoin()` instead
+- Confirmed working by user in-game test of v0.23.0
 
 ## Dependencies
 - Java 25, Gradle 9.2.1

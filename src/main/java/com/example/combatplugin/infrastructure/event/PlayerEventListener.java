@@ -6,8 +6,11 @@ import com.example.combatplugin.domain.model.PlayerProfile;
 import com.example.combatplugin.infrastructure.persistence.EcsProfileRepository;
 import com.example.combatplugin.infrastructure.ui.XpProgressHud;
 import com.hypixel.hytale.component.Holder;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -58,7 +61,9 @@ public final class PlayerEventListener {
                 statApplicator.applyProfileModifiers(uuid, profile, holder, null);
             } else {
                 // Holder is null (always the case in this Hytale build).
-                // Load from file — ProfileInitSystem will apply stats once Store+Ref are available.
+                // Load from file and apply stats immediately using the ECS Ref from the event.
+                // ProfileInitSystem (RefChangeSystem) never fires for built-in components, so we
+                // cannot rely on it. Ref.getStore() gives us the Store without needing the Holder.
                 profile = repository.loadFromFile(uuid).orElseGet(() -> {
                     PlayerProfile def = PlayerProfile.defaultProfile();
                     repository.save(uuid, def); // writes default to disk for new players
@@ -66,9 +71,20 @@ public final class PlayerEventListener {
                     return def;
                 });
                 LOGGER.atInfo().log("[CombatPlugin] Profile loaded from file for %s — Lv.%d", uuid, profile.getLevel());
+
+                // Apply level/talent stat modifiers now.
+                // event.getPlayerRef() (from PlayerEvent) is Ref<EntityStore> — not PlayerRef.
+                // Ref carries its Store internally; no Holder required.
+                try {
+                    Ref<EntityStore> entityRef = event.getPlayerRef();
+                    Store<EntityStore> entityStore = entityRef.getStore();
+                    statApplicator.applyProfileModifiers(uuid, profile, entityStore, entityRef);
+                    LOGGER.atInfo().log("[CombatPlugin] Stats applied on join for %s — Lv.%d", uuid, profile.getLevel());
+                } catch (Exception e) {
+                    LOGGER.atWarning().log("[CombatPlugin] Failed to apply stats on join for %s: %s", uuid, e);
+                }
             }
 
-            // Set initial XP HUD (stats applied later by ProfileInitSystem when Store+Ref ready)
             setXpHud(player, playerRef, profile);
 
             LOGGER.atInfo().log("[CombatPlugin] Profile ready for %s (%s)", playerRef.getUsername(), uuid);

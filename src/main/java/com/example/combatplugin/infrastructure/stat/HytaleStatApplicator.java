@@ -10,10 +10,10 @@ import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-// ASSUMPTION: Stat API import paths from documentation — verify after ./gradlew build.
-// If unresolved, search decompiled sources for EntityStatMap and DefaultEntityStatTypes.
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
+import com.hypixel.hytale.server.core.modules.entitystats.modifier.Modifier;
+import com.hypixel.hytale.server.core.modules.entitystats.modifier.StaticModifier;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
 import java.util.List;
@@ -22,11 +22,11 @@ import java.util.UUID;
 /**
  * Translates domain CombatModifiers into Hytale EntityStatMap API calls.
  *
- * Strategy: reset the affected stats to their base values, then apply the full
- * modifier list from scratch. This avoids accumulation errors on re-apply.
- *
- * ASSUMPTION: EntityStatMap.resetStatValue() restores the stat to its unmodified base.
- * TODO: Confirm that resetStatValue() returns to the character's true base, not to 0.
+ * Strategy: remove all plugin-managed named modifiers, then re-apply the full list.
+ * Uses putModifier(statIdx, key, StaticModifier) which targets the MAX stat value —
+ * the value displayed in the character panel. addStatValue/resetStatValue only affect
+ * the current value (like healing), not the max, so they have no visible effect on
+ * the character panel.
  */
 public class HytaleStatApplicator implements IStatApplicator {
 
@@ -85,12 +85,16 @@ public class HytaleStatApplicator implements IStatApplicator {
         return statMap;
     }
 
+    /** Key prefix used for all plugin-managed named modifiers. One key per stat index. */
+    private static final String MODIFIER_KEY = "combat_plugin_level_bonus";
+
     // ── Private helpers ────────────────────────────────────────────────────────
 
     private void resetManagedStats(EntityStatMap statMap) {
-        statMap.resetStatValue(DefaultEntityStatTypes.getHealth());
-        statMap.resetStatValue(DefaultEntityStatTypes.getMana());
-        statMap.resetStatValue(DefaultEntityStatTypes.getStamina());
+        statMap.removeModifier(DefaultEntityStatTypes.getHealth(),   MODIFIER_KEY);
+        statMap.removeModifier(DefaultEntityStatTypes.getMana(),     MODIFIER_KEY);
+        statMap.removeModifier(DefaultEntityStatTypes.getStamina(),  MODIFIER_KEY);
+        statMap.removeModifier(DefaultEntityStatTypes.getSignatureEnergy(), MODIFIER_KEY);
     }
 
     private void applyModifier(EntityStatMap statMap, CombatModifier mod, UUID uuid) {
@@ -98,15 +102,19 @@ public class HytaleStatApplicator implements IStatApplicator {
         if (statIdx < 0) return; // DAMAGE / HEALING / virtual stats handled at event time, not here
 
         switch (mod.type()) {
-            case FLAT_ADD -> statMap.addStatValue(statIdx, mod.value());
+            case FLAT_ADD -> {
+                StaticModifier modifier = new StaticModifier(
+                        Modifier.ModifierTarget.MAX,
+                        StaticModifier.CalculationType.ADDITIVE,
+                        mod.value());
+                statMap.putModifier(statIdx, MODIFIER_KEY, modifier);
+            }
             case PERCENT_ADD, PERCENT_MULTIPLY -> {
-                // ASSUMPTION: EntityStatMap has no direct "multiply max" method.
-                // Applying as a flat addition of (base * percentage) as a pragmatic workaround.
-                // TODO: Confirm and replace with the correct Hytale API call when available.
-                float base = statMap.get(statIdx).getMax();
-                statMap.addStatValue(statIdx, base * mod.value());
-                LOGGER.atInfo().log("[DEBUG] Applied %s %.2f%% to stat %d for %s (flat equiv: %.1f)",
-                        mod.type(), mod.value() * 100f, statIdx, uuid, base * mod.value());
+                StaticModifier modifier = new StaticModifier(
+                        Modifier.ModifierTarget.MAX,
+                        StaticModifier.CalculationType.MULTIPLICATIVE,
+                        mod.value());
+                statMap.putModifier(statIdx, MODIFIER_KEY, modifier);
             }
         }
     }

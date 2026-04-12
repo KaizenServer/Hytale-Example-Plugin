@@ -92,6 +92,23 @@ When a crash persists after a fix with the exact same error, do not assume the f
 
 ---
 
+## 10. addStatValue / resetStatValue no afectan el character panel de Hytale
+
+**What happened:**
+v0.22.0 aplicó level bonuses usando `addStatValue(statIdx, value)` y `resetStatValue(statIdx)`. Los logs mostraban "Stats applied on join" sin errores. El character panel (Health/Mana/Stamina max) no cambió. Se asumió que el API era correcto hasta que el usuario confirmó que seguía sin funcionar.
+
+**Root cause:**
+`addStatValue` modifica el valor *actual* del stat (equivalente a curación temporal). `resetStatValue` lo resetea al base. Ninguno afecta el *máximo* del stat. El character panel muestra el máximo. Se necesita el sistema de named modifiers.
+
+**Rule:**
+Para modificar el máximo de un stat en Hytale (visible en character panel), usar exclusivamente:
+- `EntityStatMap.putModifier(int statIdx, String key, new StaticModifier(Modifier.ModifierTarget.MAX, StaticModifier.CalculationType.ADDITIVE, float amount))`
+- `EntityStatMap.removeModifier(int statIdx, String key)` para limpiar antes de re-aplicar
+
+`addStatValue`/`resetStatValue` son para healing/damage en tiempo real, NO para bonificaciones de nivel/talento.
+
+---
+
 ## 8. Agents using bash internally triggered Microsoft Store on Windows
 
 **What happened:**
