@@ -11,6 +11,7 @@ import com.example.combatplugin.application.service.TalentService;
 import com.example.combatplugin.application.usecase.AwardXpUseCase;
 import com.example.combatplugin.application.usecase.ChooseClassUseCase;
 import com.example.combatplugin.application.usecase.RemoveTalentRankUseCase;
+import com.example.combatplugin.application.usecase.ResetClassUseCase;
 import com.example.combatplugin.application.usecase.UnlockTalentUseCase;
 import com.example.combatplugin.config.CombatConfig;
 import com.example.combatplugin.infrastructure.command.LevelCommandCollection;
@@ -97,6 +98,8 @@ public class CombatPlugin extends JavaPlugin {
         // ── 6. Use cases (shared by UI presenter and systems) ────────────────
         ChooseClassUseCase      chooseClassUseCase  = new ChooseClassUseCase(
                 classService, profileService, statApplicator);
+        ResetClassUseCase       resetClassUseCase   = new ResetClassUseCase(
+                profileService, talentService, statApplicator);
         UnlockTalentUseCase     unlockTalentUseCase = new UnlockTalentUseCase(
                 talentService, profileService, statApplicator);
         RemoveTalentRankUseCase removeTalentUseCase = new RemoveTalentRankUseCase(
@@ -129,7 +132,7 @@ public class CombatPlugin extends JavaPlugin {
 
         // ── 10. Commands ──────────────────────────────────────────────────────
         this.getCommandRegistry().registerCommand(
-                new ClassCommandCollection(classService, profileService, uiPresenter));
+                new ClassCommandCollection(classService, profileService, resetClassUseCase, uiPresenter));
         this.getCommandRegistry().registerCommand(
                 new TalentsCommand(talentService, profileService, uiPresenter));
         this.getCommandRegistry().registerCommand(

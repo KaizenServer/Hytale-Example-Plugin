@@ -1,186 +1,610 @@
-// CombatPlugin — Class Selection Page
-// cmd.append("ClassSelectionPage.ui") inlines this file's content directly.
-// IMPORTANT: All IDs must be globally unique — Hytale has no descendant selector support.
-// Selectors in Java must be flat: "#C0Title", not "#Card0 #CardTitle".
+// CombatPlugin — Class Selection Page  (UI Enhancing v7)
+// All IDs must be globally unique — Hytale has no descendant selector support.
+// Only .Text properties are settable at runtime via cmd.set().
+// Background, Anchor, Padding are baked at load time.
+//
+// Card order (fixed, matches DefaultClasses registration order):
+//   0 = Weaponmaster  (orange  — primary: role_tank.png   / secondary: role_damage.png)
+//   1 = Elementalist  (blue    — primary: role_damage.png  / secondary: role_support.png)
+//   2 = Technocrat    (green   — primary: role_support.png / secondary: role_damage.png)
+//   3 = Summoner      (purple  — primary: role_tank.png    / secondary: role_damage.png)
+//
+// Per-card IDs:
+//   #CnTitle         class name (header)
+//   #CnRolePrimary   primary role label (header role row, left side)
+//   #CnRoleSecondary secondary role label (header role row, right side)
+//   #CnShort         short tagline (above modifier icons)
+//   #CnDesc          detailed description (below modifier icons)
+//   #CnBtn           choose button
+//   #CnBtnLabel      button label text
+//
+// Role row layout: [icon1] Primary  [icon2] Secondary
+//   Two FlexWeight groups split 50/50, no "/" separator.
+//   All four cards now have a primary icon.
+//
+// Icon paths (relative to Common/UI/Custom/):
+//   Role icons     — icons/role_tank.png, icons/role_damage.png, icons/role_support.png
+//   Modifier icons — icons/mod_wm_0..2.png, mod_el_0..2.png, mod_tc_0..2.png, mod_sm_0..2.png
+//
+// Math check (container 960×600, Padding Full:16, inner 928×568):
+//   Title(28) + Spacer(4) + Cards(510) + Status(20) = 562 ≤ 568 ✓
+//   Cards: 4×220 + 3×12 = 916 ≤ 928 ✓
+//   Card: Header(70) + Body(440) = 510 ✓
+//   Header inner (70−8−6=56): Title(22) + RoleRow(26) = 48 ≤ 56 ✓
+//   Body inner (440−20=420):
+//     Short(62)+Div(5)+ModLabel(13)+Gap(3)+Icons(48)+Gap(3)+Div(5)+Desc(253)+Btn(28) = 420 ✓
 
 Group {
-  Background: #000000(0.65);
+  Background: #000000(0.72);
   LayoutMode: Middle;
 
   Group {
-    Anchor: (Width: 920, Height: 440);
+    Anchor: (Width: 960, Height: 600);
     LayoutMode: Top;
-    Background: #0d0d1a(0.95);
-    Padding: (Full: 20);
+    Background: #0d0d1a(0.96);
+    Padding: (Full: 16);
 
     Label #PageTitle {
-      Style: (RenderBold: true, FontSize: 18);
-      Anchor: (Height: 36);
+      Style: (RenderBold: true, FontSize: 20);
+      Anchor: (Height: 28);
       Text: "Choose Your Class";
     }
 
+    Group { Anchor: (Height: 4); }
+
+    // ── Four class cards ─────────────────────────────────────────────────────
+
     Group #CardContainer {
-      Anchor: (Height: 300);
+      Anchor: (Height: 510);
       LayoutMode: Left;
 
+      // ════════════════════════════════════════════════════════════════════════
+      // CARD 0 — Weaponmaster  (orange)
+      // ════════════════════════════════════════════════════════════════════════
+
       Group #Card0 {
-        Anchor: (Width: 200, Height: 300);
+        Anchor: (Width: 220, Height: 510);
         LayoutMode: Top;
-        Background: #1a1a2e(0.92);
-        Padding: (Full: 12);
+        Background: #1e1208(0.97);
 
-        Label #C0Title {
-          Style: (RenderBold: true, FontSize: 14);
-          Anchor: (Height: 22);
-          Text: "";
+        // ── Header (70px) ──────────────────────────────────────────────────
+        Group {
+          Anchor: (Height: 70);
+          LayoutMode: Top;
+          Background: #7a3a10(0.98);
+          Padding: (Left: 10, Right: 10, Top: 8, Bottom: 6);
+
+          Label #C0Title {
+            Style: (RenderBold: true, FontSize: 15);
+            Anchor: (Height: 22);
+            Text: "";
+          }
+
+          // Role row: [icon1] Primary  [icon2] Secondary  (50/50 split, no separator)
+          Group {
+            Anchor: (Height: 26);
+            LayoutMode: Left;
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: Left;
+              Group { Anchor: (Width: 20, Height: 20); Background: (TexturePath: "icons/role_tank.png"); }
+              Group { Anchor: (Width: 3); }
+              Label #C0RolePrimary {
+                Style: (TextColor: #ffcc88(1.0), FontSize: 9);
+                Anchor: (Height: 20);
+                Text: "";
+              }
+            }
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: Left;
+              Group { Anchor: (Width: 20, Height: 20); Background: (TexturePath: "icons/role_damage.png"); }
+              Group { Anchor: (Width: 3); }
+              Label #C0RoleSecondary {
+                Style: (TextColor: #ffcc88(1.0), FontSize: 9);
+                Anchor: (Height: 20);
+                Text: "";
+              }
+            }
+          }
         }
 
-        Label #C0Role {
-          Style: (TextColor: #aaaacc(0.9), FontSize: 11);
-          Anchor: (Height: 18);
-          Text: "";
-        }
+        // ── Body (440px, Padding Full:10 → 420px inner) ────────────────────
+        Group {
+          Anchor: (Height: 440);
+          LayoutMode: Top;
+          Padding: (Full: 10);
 
-        Label #C0Desc {
-          Style: (TextColor: #cccccc(0.8), FontSize: 11);
-          Anchor: (Height: 80);
-          Text: "";
-        }
+          // Short tagline (font 11, wrap)
+          Label #C0Short {
+            Style: (TextColor: #ccbbaa(0.9), FontSize: 11, Wrap: true);
+            Anchor: (Height: 62);
+            Text: "";
+          }
 
-        Button #C0Btn {
-          Anchor: (Width: 176, Height: 30);
-          Style: (
-            Default: (Background: #3a3a6e(0.95)),
-            Hovered: (Background: #5a5aae(0.95)),
-            Pressed: (Background: #4a4a8e(0.95))
-          );
+          // Divider
+          Group { Anchor: (Height: 2); }
+          Group { Anchor: (Height: 1); Background: #ffffff(0.12); }
+          Group { Anchor: (Height: 2); }
 
-          Label #C0BtnLabel {
-            Style: (FontSize: 12);
-            Text: "Choose";
+          // Modifiers section label
+          Label {
+            Style: (TextColor: #aaaaaa(0.85), FontSize: 9, RenderBold: true);
+            Anchor: (Height: 13);
+            Text: "Modifiers acquired:";
+          }
+
+          Group { Anchor: (Height: 3); }
+
+          // Modifier icon grid (3 icons, centred) — hover icon for tooltip description
+          Group {
+            Anchor: (Height: 48);
+            LayoutMode: Left;
+
+            Group { FlexWeight: 1; }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_wm_0.png");
+              TooltipText: "Critical Strikes: Critical strikes can occur using weapon attacks with a given probability. Critical strikes deal 100% more damage and healing.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { Anchor: (Width: 8); }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_wm_1.png");
+              TooltipText: "Unwavering Command: Holding a shield will increase your threat generation drastically.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { Anchor: (Width: 8); }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_wm_2.png");
+              TooltipText: "Scavenger: Your bows and crossbows no longer consume ammunition from your inventory.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { FlexWeight: 1; }
+          }
+
+          Group { Anchor: (Height: 3); }
+
+          // Divider
+          Group { Anchor: (Height: 2); }
+          Group { Anchor: (Height: 1); Background: #ffffff(0.12); }
+          Group { Anchor: (Height: 2); }
+
+          // Detailed description (font 11, wrap)
+          Label #C0Desc {
+            Style: (TextColor: #cccccc(0.85), FontSize: 11, Wrap: true);
+            Anchor: (Height: 253);
+            Text: "";
+          }
+
+          // Choose button
+          Button #C0Btn {
+            Anchor: (Width: 200, Height: 28);
+            LayoutMode: Middle;
+            Style: (
+              Default: (Background: #8a4a18(0.95)),
+              Hovered: (Background: #b06030(0.95)),
+              Pressed: (Background: #9a5520(0.95))
+            );
+            Label #C0BtnLabel {
+              Style: (FontSize: 12, Alignment: Center);
+              Text: "Choose";
+            }
           }
         }
       }
 
-      Group { Anchor: (Width: 20); }
+      Group { Anchor: (Width: 12); }
+
+      // ════════════════════════════════════════════════════════════════════════
+      // CARD 1 — Elementalist  (blue)
+      // ════════════════════════════════════════════════════════════════════════
 
       Group #Card1 {
-        Anchor: (Width: 200, Height: 300);
+        Anchor: (Width: 220, Height: 510);
         LayoutMode: Top;
-        Background: #1a1a2e(0.92);
-        Padding: (Full: 12);
+        Background: #0d1535(0.97);
 
-        Label #C1Title {
-          Style: (RenderBold: true, FontSize: 14);
-          Anchor: (Height: 22);
-          Text: "";
+        Group {
+          Anchor: (Height: 70);
+          LayoutMode: Top;
+          Background: #1a2a7a(0.98);
+          Padding: (Left: 10, Right: 10, Top: 8, Bottom: 6);
+
+          Label #C1Title {
+            Style: (RenderBold: true, FontSize: 15);
+            Anchor: (Height: 22);
+            Text: "";
+          }
+
+          Group {
+            Anchor: (Height: 26);
+            LayoutMode: Left;
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: Left;
+              Group { Anchor: (Width: 20, Height: 20); Background: (TexturePath: "icons/role_damage.png"); }
+              Group { Anchor: (Width: 3); }
+              Label #C1RolePrimary {
+                Style: (TextColor: #88ccff(1.0), FontSize: 9);
+                Anchor: (Height: 20);
+                Text: "";
+              }
+            }
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: Left;
+              Group { Anchor: (Width: 20, Height: 20); Background: (TexturePath: "icons/role_support.png"); }
+              Group { Anchor: (Width: 3); }
+              Label #C1RoleSecondary {
+                Style: (TextColor: #88ccff(1.0), FontSize: 9);
+                Anchor: (Height: 20);
+                Text: "";
+              }
+            }
+          }
         }
 
-        Label #C1Role {
-          Style: (TextColor: #aaaacc(0.9), FontSize: 11);
-          Anchor: (Height: 18);
-          Text: "";
-        }
+        Group {
+          Anchor: (Height: 440);
+          LayoutMode: Top;
+          Padding: (Full: 10);
 
-        Label #C1Desc {
-          Style: (TextColor: #cccccc(0.8), FontSize: 11);
-          Anchor: (Height: 80);
-          Text: "";
-        }
+          Label #C1Short {
+            Style: (TextColor: #aabbcc(0.9), FontSize: 11, Wrap: true);
+            Anchor: (Height: 62);
+            Text: "";
+          }
 
-        Button #C1Btn {
-          Anchor: (Width: 176, Height: 30);
-          Style: (
-            Default: (Background: #3a3a6e(0.95)),
-            Hovered: (Background: #5a5aae(0.95)),
-            Pressed: (Background: #4a4a8e(0.95))
-          );
+          Group { Anchor: (Height: 2); }
+          Group { Anchor: (Height: 1); Background: #ffffff(0.12); }
+          Group { Anchor: (Height: 2); }
 
-          Label #C1BtnLabel {
-            Style: (FontSize: 12);
-            Text: "Choose";
+          Label {
+            Style: (TextColor: #aaaaaa(0.85), FontSize: 9, RenderBold: true);
+            Anchor: (Height: 13);
+            Text: "Modifiers acquired:";
+          }
+
+          Group { Anchor: (Height: 3); }
+
+          Group {
+            Anchor: (Height: 48);
+            LayoutMode: Left;
+
+            Group { FlexWeight: 1; }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_el_0.png");
+              TooltipText: "Mystical Teachings: Your wands and spellbooks no longer consume elemental essences.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { Anchor: (Width: 8); }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_el_1.png");
+              TooltipText: "Primal Totems: Your totems no longer are consumed and will stay active 50% more time until despawning.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { Anchor: (Width: 8); }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_el_2.png");
+              TooltipText: "Spellblade: You can imbue your weapons with an element, causing your attacks to deal the elemental damage of your choice.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { FlexWeight: 1; }
+          }
+
+          Group { Anchor: (Height: 3); }
+
+          Group { Anchor: (Height: 2); }
+          Group { Anchor: (Height: 1); Background: #ffffff(0.12); }
+          Group { Anchor: (Height: 2); }
+
+          Label #C1Desc {
+            Style: (TextColor: #cccccc(0.85), FontSize: 11, Wrap: true);
+            Anchor: (Height: 253);
+            Text: "";
+          }
+
+          Button #C1Btn {
+            Anchor: (Width: 200, Height: 28);
+            LayoutMode: Middle;
+            Style: (
+              Default: (Background: #2a3a9a(0.95)),
+              Hovered: (Background: #3a50c0(0.95)),
+              Pressed: (Background: #3040aa(0.95))
+            );
+            Label #C1BtnLabel {
+              Style: (FontSize: 12, Alignment: Center);
+              Text: "Choose";
+            }
           }
         }
       }
 
-      Group { Anchor: (Width: 20); }
+      Group { Anchor: (Width: 12); }
+
+      // ════════════════════════════════════════════════════════════════════════
+      // CARD 2 — Technocrat  (green)
+      // ════════════════════════════════════════════════════════════════════════
 
       Group #Card2 {
-        Anchor: (Width: 200, Height: 300);
+        Anchor: (Width: 220, Height: 510);
         LayoutMode: Top;
-        Background: #1a1a2e(0.92);
-        Padding: (Full: 12);
+        Background: #0d2014(0.97);
 
-        Label #C2Title {
-          Style: (RenderBold: true, FontSize: 14);
-          Anchor: (Height: 22);
-          Text: "";
+        Group {
+          Anchor: (Height: 70);
+          LayoutMode: Top;
+          Background: #1a4a28(0.98);
+          Padding: (Left: 10, Right: 10, Top: 8, Bottom: 6);
+
+          Label #C2Title {
+            Style: (RenderBold: true, FontSize: 15);
+            Anchor: (Height: 22);
+            Text: "";
+          }
+
+          Group {
+            Anchor: (Height: 26);
+            LayoutMode: Left;
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: Left;
+              Group { Anchor: (Width: 20, Height: 20); Background: (TexturePath: "icons/role_support.png"); }
+              Group { Anchor: (Width: 3); }
+              Label #C2RolePrimary {
+                Style: (TextColor: #88ffcc(1.0), FontSize: 9);
+                Anchor: (Height: 20);
+                Text: "";
+              }
+            }
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: Left;
+              Group { Anchor: (Width: 20, Height: 20); Background: (TexturePath: "icons/role_damage.png"); }
+              Group { Anchor: (Width: 3); }
+              Label #C2RoleSecondary {
+                Style: (TextColor: #88ffcc(1.0), FontSize: 9);
+                Anchor: (Height: 20);
+                Text: "";
+              }
+            }
+          }
         }
 
-        Label #C2Role {
-          Style: (TextColor: #aaaacc(0.9), FontSize: 11);
-          Anchor: (Height: 18);
-          Text: "";
-        }
+        Group {
+          Anchor: (Height: 440);
+          LayoutMode: Top;
+          Padding: (Full: 10);
 
-        Label #C2Desc {
-          Style: (TextColor: #cccccc(0.8), FontSize: 11);
-          Anchor: (Height: 80);
-          Text: "";
-        }
+          Label #C2Short {
+            Style: (TextColor: #aaccbb(0.9), FontSize: 11, Wrap: true);
+            Anchor: (Height: 62);
+            Text: "";
+          }
 
-        Button #C2Btn {
-          Anchor: (Width: 176, Height: 30);
-          Style: (
-            Default: (Background: #3a3a6e(0.95)),
-            Hovered: (Background: #5a5aae(0.95)),
-            Pressed: (Background: #4a4a8e(0.95))
-          );
+          Group { Anchor: (Height: 2); }
+          Group { Anchor: (Height: 1); Background: #ffffff(0.12); }
+          Group { Anchor: (Height: 2); }
 
-          Label #C2BtnLabel {
-            Style: (FontSize: 12);
-            Text: "Choose";
+          Label {
+            Style: (TextColor: #aaaaaa(0.85), FontSize: 9, RenderBold: true);
+            Anchor: (Height: 13);
+            Text: "Modifiers acquired:";
+          }
+
+          Group { Anchor: (Height: 3); }
+
+          Group {
+            Anchor: (Height: 48);
+            LayoutMode: Left;
+
+            Group { FlexWeight: 1; }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_tc_0.png");
+              TooltipText: "Master of Gadgets: Your turrets, totems, bombs, traps and throwable potions are no longer consumed from your inventory on use.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { Anchor: (Width: 8); }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_tc_1.png");
+              TooltipText: "Overdose: Allows your attacked enemies to stack the same negative effect (such as poisons, burning, bleeds...) and your allies to stack the same positive effect more than once.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { Anchor: (Width: 8); }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_tc_2.png");
+              TooltipText: "Survivalist: All your magical effects will also be affected by armor stats, such as light damage attack or signature boosts.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { FlexWeight: 1; }
+          }
+
+          Group { Anchor: (Height: 3); }
+
+          Group { Anchor: (Height: 2); }
+          Group { Anchor: (Height: 1); Background: #ffffff(0.12); }
+          Group { Anchor: (Height: 2); }
+
+          Label #C2Desc {
+            Style: (TextColor: #cccccc(0.85), FontSize: 11, Wrap: true);
+            Anchor: (Height: 253);
+            Text: "";
+          }
+
+          Button #C2Btn {
+            Anchor: (Width: 200, Height: 28);
+            LayoutMode: Middle;
+            Style: (
+              Default: (Background: #2a6a3a(0.95)),
+              Hovered: (Background: #3a8a50(0.95)),
+              Pressed: (Background: #307840(0.95))
+            );
+            Label #C2BtnLabel {
+              Style: (FontSize: 12, Alignment: Center);
+              Text: "Choose";
+            }
           }
         }
       }
 
-      Group { Anchor: (Width: 20); }
+      Group { Anchor: (Width: 12); }
+
+      // ════════════════════════════════════════════════════════════════════════
+      // CARD 3 — Summoner  (purple)
+      // Note: no matching primary icon for "Summoner" role.
+      //       Left group shows text-only; secondary (Damage Dealer) has icon.
+      // ════════════════════════════════════════════════════════════════════════
 
       Group #Card3 {
-        Anchor: (Width: 200, Height: 300);
+        Anchor: (Width: 220, Height: 510);
         LayoutMode: Top;
-        Background: #1a1a2e(0.92);
-        Padding: (Full: 12);
+        Background: #1a0d30(0.97);
 
-        Label #C3Title {
-          Style: (RenderBold: true, FontSize: 14);
-          Anchor: (Height: 22);
-          Text: "";
+        Group {
+          Anchor: (Height: 70);
+          LayoutMode: Top;
+          Background: #3a1a6a(0.98);
+          Padding: (Left: 10, Right: 10, Top: 8, Bottom: 6);
+
+          Label #C3Title {
+            Style: (RenderBold: true, FontSize: 15);
+            Anchor: (Height: 22);
+            Text: "";
+          }
+
+          // Role row: Summoner primary = Tank (same icon pattern as Weaponmaster)
+          Group {
+            Anchor: (Height: 26);
+            LayoutMode: Left;
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: Left;
+              Group { Anchor: (Width: 20, Height: 20); Background: (TexturePath: "icons/role_tank.png"); }
+              Group { Anchor: (Width: 3); }
+              Label #C3RolePrimary {
+                Style: (TextColor: #cc88ff(1.0), FontSize: 9);
+                Anchor: (Height: 20);
+                Text: "";
+              }
+            }
+
+            Group {
+              FlexWeight: 1;
+              LayoutMode: Left;
+              Group { Anchor: (Width: 20, Height: 20); Background: (TexturePath: "icons/role_damage.png"); }
+              Group { Anchor: (Width: 3); }
+              Label #C3RoleSecondary {
+                Style: (TextColor: #cc88ff(1.0), FontSize: 9);
+                Anchor: (Height: 20);
+                Text: "";
+              }
+            }
+          }
         }
 
-        Label #C3Role {
-          Style: (TextColor: #aaaacc(0.9), FontSize: 11);
-          Anchor: (Height: 18);
-          Text: "";
-        }
+        Group {
+          Anchor: (Height: 440);
+          LayoutMode: Top;
+          Padding: (Full: 10);
 
-        Label #C3Desc {
-          Style: (TextColor: #cccccc(0.8), FontSize: 11);
-          Anchor: (Height: 80);
-          Text: "";
-        }
+          Label #C3Short {
+            Style: (TextColor: #bbaacc(0.9), FontSize: 11, Wrap: true);
+            Anchor: (Height: 62);
+            Text: "";
+          }
 
-        Button #C3Btn {
-          Anchor: (Width: 176, Height: 30);
-          Style: (
-            Default: (Background: #3a3a6e(0.95)),
-            Hovered: (Background: #5a5aae(0.95)),
-            Pressed: (Background: #4a4a8e(0.95))
-          );
+          Group { Anchor: (Height: 2); }
+          Group { Anchor: (Height: 1); Background: #ffffff(0.12); }
+          Group { Anchor: (Height: 2); }
 
-          Label #C3BtnLabel {
-            Style: (FontSize: 12);
-            Text: "Choose";
+          Label {
+            Style: (TextColor: #aaaaaa(0.85), FontSize: 9, RenderBold: true);
+            Anchor: (Height: 13);
+            Text: "Modifiers acquired:";
+          }
+
+          Group { Anchor: (Height: 3); }
+
+          Group {
+            Anchor: (Height: 48);
+            LayoutMode: Left;
+
+            Group { FlexWeight: 1; }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_sm_0.png");
+              TooltipText: "Grave Lord: Your summon spells no longer require piles of skulls to summon entities.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { Anchor: (Width: 8); }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_sm_1.png");
+              TooltipText: "Master and Commandancy: Gain a beneficial effect depending on the pet you have active.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { Anchor: (Width: 8); }
+            Button {
+              Anchor: (Width: 44, Height: 44);
+              Background: (TexturePath: "icons/mod_sm_2.png");
+              TooltipText: "Soul Syphon: When an enemy dies, you take his soul, restoring health and mana.";
+              TextTooltipStyle: (MaxWidth: 300, LabelStyle: (Wrap: true));
+              TextTooltipShowDelay: 0.4;
+            }
+            Group { FlexWeight: 1; }
+          }
+
+          Group { Anchor: (Height: 3); }
+
+          Group { Anchor: (Height: 2); }
+          Group { Anchor: (Height: 1); Background: #ffffff(0.12); }
+          Group { Anchor: (Height: 2); }
+
+          Label #C3Desc {
+            Style: (TextColor: #cccccc(0.85), FontSize: 11, Wrap: true);
+            Anchor: (Height: 253);
+            Text: "";
+          }
+
+          Button #C3Btn {
+            Anchor: (Width: 200, Height: 28);
+            LayoutMode: Middle;
+            Style: (
+              Default: (Background: #5a2a8a(0.95)),
+              Hovered: (Background: #7a3aaa(0.95)),
+              Pressed: (Background: #6a2f98(0.95))
+            );
+            Label #C3BtnLabel {
+              Style: (FontSize: 12, Alignment: Center);
+              Text: "Choose";
+            }
           }
         }
       }
@@ -188,7 +612,7 @@ Group {
 
     Label #StatusLine {
       Style: (TextColor: #ffdd88(1.0), FontSize: 12);
-      Anchor: (Height: 24);
+      Anchor: (Height: 20);
       Text: "";
     }
   }

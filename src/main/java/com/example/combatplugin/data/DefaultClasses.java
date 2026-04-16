@@ -9,6 +9,9 @@ import java.util.Map;
 /**
  * Registers the four base combat class definitions.
  * Call register() once during CombatPlugin.setup().
+ *
+ * description         = short tagline (shown above modifier icons)
+ * detailedDescription = full lore/gameplay text (shown below modifier icons)
  */
 public final class DefaultClasses {
 
@@ -18,17 +21,21 @@ public final class DefaultClasses {
         registry.put(CombatClass.SWORD_MASTER, swordMaster());
         registry.put(CombatClass.ELEMENTALIST, elementalist());
         registry.put(CombatClass.TECHNOCRAT,   technocrat());
-        registry.put(CombatClass.NECROMANCER,  necromancer());
+        registry.put(CombatClass.NECROMANCER,  summoner());
     }
 
     private static ClassDefinition swordMaster() {
         return new ClassDefinition(
                 CombatClass.SWORD_MASTER,
-                "Sword Master",
-                "A battle-hardened warrior who excels at melee combat and shield techniques. " +
-                "Rewards aggressive play and precise blocking.",
+                "Weaponmaster",
+                "A master of arms focused on increasing the effects of weapons, " +
+                "such as attacks and signatures.",
+                "This versatile class can perform multirole due to increasing the " +
+                "efectivity of weapons. Whether by improving melee or ranged damage, " +
+                "shield effectiveness, or enhancing elemental staves, weaponmasters " +
+                "dominate the battlefield with combat tailored to their weapon of choice.",
                 "Tank",
-                "Bruiser",
+                "Damage Dealer",
                 List.of(
                         "sm_iron_will",
                         "sm_shield_mastery",
@@ -44,10 +51,14 @@ public final class DefaultClasses {
         return new ClassDefinition(
                 CombatClass.ELEMENTALIST,
                 "Elementalist",
-                "A master of arcane forces who amplifies spells and healing. " +
-                "Rewards efficient mana usage and elemental synergy.",
+                "Harness the power of the elements to destroy your enemies or aid " +
+                "your allies with strong magic.",
+                "From warriors who imbue their weapons with magic, sorcerers who " +
+                "destroy their enemies, magical archers, or healers who support their " +
+                "allies in combat, elementalists manipulate the elements of the universe " +
+                "to use them as a tool of combat.",
                 "Damage Dealer",
-                "Healer",
+                "Support",
                 List.of(
                         "el_arcane_surge",
                         "el_mana_font",
@@ -63,8 +74,13 @@ public final class DefaultClasses {
         return new ClassDefinition(
                 CombatClass.TECHNOCRAT,
                 "Technocrat",
-                "A cunning engineer who leverages gadgets, consumables, and tactical tools. " +
-                "Rewards preparation and quick item switching.",
+                "An estrategic scientist that uses gadgets, bombs and alchemy " +
+                "to boost allies and decay enemies.",
+                "Technocrats are fighters obsessed with science. Their arsenal encompasses " +
+                "all manner of gadgets, such as bombs or throwable potions, traps, and " +
+                "turrets that can destroy their enemies or aid their allies. Furthermore, " +
+                "they have perfected these gadgets so that they are no longer merely " +
+                "consumables, but genuine weapons of war.",
                 "Support",
                 "Damage Dealer",
                 List.of(
@@ -78,13 +94,17 @@ public final class DefaultClasses {
         );
     }
 
-    private static ClassDefinition necromancer() {
+    private static ClassDefinition summoner() {
         return new ClassDefinition(
                 CombatClass.NECROMANCER,
-                "Necromancer",
-                "A dark summoner who commands undead forces. " +
-                "Grows stronger the larger their army becomes.",
                 "Summoner",
+                "A lord of death that summons aberrations at its command and " +
+                "siphons life from its enemies.",
+                "Fighting a summoner is not fighting an enemy, but an entire army. " +
+                "These combatants use entities to fight alongside them, either to defeat " +
+                "their master's enemies or to protect him from harm. Different types of " +
+                "entities can be summoned, each with its own effects.",
+                "Tank",
                 "Damage Dealer",
                 List.of(
                         "nc_death_surge",

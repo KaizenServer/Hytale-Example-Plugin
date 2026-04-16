@@ -72,13 +72,19 @@ public class ClassSelectionPage extends InteractiveCustomUIPage<ClassSelectionPa
         cmd.set("#PageTitle.Text", headerText);
 
         // Populate 4 class cards.
-        // IDs are flat and unique: #C0Title, #C0Role, #C0Desc, #C0Btn, #C0BtnLabel, ...
+        // IDs are flat and unique: #C0Title, #C0Role, #C0Short, #C0Desc, #C0Btn, #C0BtnLabel, ...
+        // Layout: header band (Title + Role) → Short tagline → icon zone → Desc → button.
+        // #CnShort — short tagline above icon zone (cls.description() for now).
+        // #CnDesc  — detailed description below icon zone (set "" until ClassDefinition
+        //            is extended with a detailedDescription() field).
         for (int i = 0; i < 4 && i < classes.size(); i++) {
             ClassDefinition cls = classes.get(i);
 
             cmd.set("#C" + i + "Title.Text", cls.displayName());
-            cmd.set("#C" + i + "Role.Text", cls.primaryRole() + " / " + cls.secondaryRole());
-            cmd.set("#C" + i + "Desc.Text", cls.description());
+            cmd.set("#C" + i + "RolePrimary.Text", cls.primaryRole());
+            cmd.set("#C" + i + "RoleSecondary.Text", cls.secondaryRole());
+            cmd.set("#C" + i + "Short.Text", cls.description());
+            cmd.set("#C" + i + "Desc.Text", cls.detailedDescription());
 
             boolean isSelected = profile.hasClass()
                     && profile.getCombatClass() == cls.id();

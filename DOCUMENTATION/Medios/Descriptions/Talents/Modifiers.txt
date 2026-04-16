@@ -1,0 +1,35 @@
+WEAPONMASTER
+
+Critical Strikes: Critical strikes can occur using weapon attacks with a given probability (can be increased). Critical strikes deal 100% more damage and healing.
+
+Unwavering Command: Holding a shield will increase your threat generation drastically
+
+Scavenger: Your bows and crossbows no longer consume ammunition from your inventory
+
+
+ELEMENTALIST
+
+Mystical teachings: Your wands and spellbooks no longer consume elemental essences
+
+Primal Totems: Your totems no longer are consumed and will stay active 50% more time until despawing
+
+Spellblade: You can imbue your weapons with an element, causing your attacks to deal the elemental damage of your choice.   
+
+
+
+TECHNOCRAT
+
+Master of Gadgets: Your turrets, totems, bombs, traps and throwable potions are no longer consumed from your inventory on use
+
+Overdose: Allows your attacked enemies to stack the same negative effect (such as poisions, burning, bleeds...) and your allies to stack the same positive effect more than once (such as healing effects or buffs)
+
+Survivalist: All your magical effects will be also affected by armor stats, such as light damage attack or signature boosts
+
+
+SUMMONER
+
+Grave Lord: Your summon spells no longer requiere piles of skulls to summon entities
+
+Master and commandancy: Gain a beneficial effect depending on the pet you have active
+
+Soul Syphon: When an enemy dies, you take his soul, restoring health and mana
